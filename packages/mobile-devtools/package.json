@@ -1,6 +1,6 @@
 {
   "name": "mobile-devtools",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications",
   "license": "MIT",
   "type": "module",
@@ -44,7 +44,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "keywords": [
     "mobile",
@@ -71,6 +72,7 @@
   ],
   "scripts": {
     "prebuild": "cp ../../README.md ./README.md",
+    "prepublishOnly": "pnpm build",
     "check-types": "tsc --noEmit",
     "build": "vite build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
