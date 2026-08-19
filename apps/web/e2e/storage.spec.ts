@@ -34,7 +34,9 @@ test.describe('Storage Tab E2E', () => {
     await expect(listScroll).toContainText('new_e2e_val');
   });
 
-  test('should switch storage select options between localStorage and sessionStorage', async ({ page }) => {
+  test('should switch storage select options between localStorage and sessionStorage', async ({
+    page,
+  }) => {
     await page.locator('.devtools-badge').click();
     await page.locator('.devtools-tab-btn', { hasText: 'Storage' }).click();
 

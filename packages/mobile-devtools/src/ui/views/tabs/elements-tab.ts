@@ -1,4 +1,10 @@
-import { DevToolsStore, ElementsManager, isBrowser } from '../../../core';
+import {
+  DevToolsStore,
+  ELEMENTS_SUB_TABS,
+  ElementsManager,
+  ElementsSubTab,
+  isBrowser,
+} from '../../../core';
 import {
   CHEVRON_DOWN_ICON,
   CHEVRON_RIGHT_ICON,
@@ -9,13 +15,11 @@ import {
 } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
-type ElementsSubTab = 'tree' | 'styles' | 'attributes';
-
 export class ElementsTabView {
   private store: DevToolsStore;
   private elementsManager: ElementsManager;
   private container: HTMLElement;
-  private activeSubTab: ElementsSubTab = 'tree';
+  private activeSubTab: ElementsSubTab = ELEMENTS_SUB_TABS.TREE;
   private searchValue = '';
   private expandedNodes = new Set<HTMLElement>();
 
@@ -101,7 +105,9 @@ export class ElementsTabView {
     searchInput.type = 'text';
     searchInput.className = 'devtools-search-input';
     searchInput.placeholder =
-      this.activeSubTab === 'styles' ? 'Filter CSS styles...' : 'Filter elements...';
+      this.activeSubTab === ELEMENTS_SUB_TABS.STYLES
+        ? 'Filter CSS styles...'
+        : 'Filter elements...';
     searchInput.value = this.searchValue;
     searchInput.style.flex = '1';
     searchInput.style.minWidth = '0';
@@ -125,9 +131,9 @@ export class ElementsTabView {
     subTabGroup.style.width = '100%';
 
     const subTabs: { id: ElementsSubTab; label: string }[] = [
-      { id: 'tree', label: 'DOM Tree' },
-      { id: 'styles', label: 'Styles' },
-      { id: 'attributes', label: 'Attrs' },
+      { id: ELEMENTS_SUB_TABS.TREE, label: 'DOM Tree' },
+      { id: ELEMENTS_SUB_TABS.STYLES, label: 'Styles' },
+      { id: ELEMENTS_SUB_TABS.ATTRIBUTES, label: 'Attrs' },
     ];
 
     subTabs.forEach((tab) => {
@@ -215,11 +221,11 @@ export class ElementsTabView {
     viewContainer.innerHTML = '';
     const selectedEl = this.elementsManager.getSelectedElement();
 
-    if (this.activeSubTab === 'tree') {
+    if (this.activeSubTab === ELEMENTS_SUB_TABS.TREE) {
       this.renderDomTree(viewContainer, selectedEl);
-    } else if (this.activeSubTab === 'styles') {
+    } else if (this.activeSubTab === ELEMENTS_SUB_TABS.STYLES) {
       this.renderStylesView(viewContainer, selectedEl);
-    } else if (this.activeSubTab === 'attributes') {
+    } else if (this.activeSubTab === ELEMENTS_SUB_TABS.ATTRIBUTES) {
       this.renderAttributesView(viewContainer, selectedEl);
     }
   }

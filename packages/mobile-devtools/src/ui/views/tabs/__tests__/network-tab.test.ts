@@ -30,4 +30,25 @@ describe('NetworkTabView', () => {
     expect(text).toContain('https://api.example.com/users');
     expect(text).toContain('200');
   });
+
+  it('should hide the Frames tab for HTTP request detail view', () => {
+    (tabView as any).selectedReq = store.getNetworkRequests()[0];
+    const el = tabView.render();
+    expect(el.textContent).not.toContain('Frames');
+  });
+
+  it('should show the Frames tab for WS / SSE request detail view', () => {
+    store.addNetworkRequest({
+      id: 'req_2',
+      url: 'ws://api.example.com/stream',
+      method: 'WS',
+      type: 'websocket',
+      status: 101,
+      startTime: Date.now(),
+      frames: [{ id: 'f1', type: 'received', data: 'hello', timestamp: Date.now() }],
+    });
+    (tabView as any).selectedReq = store.getNetworkRequests().find((r) => r.id === 'req_2');
+    const el = tabView.render();
+    expect(el.textContent).toContain('Frames (1)');
+  });
 });

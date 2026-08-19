@@ -1,15 +1,31 @@
-import { DevToolsStore, isBrowser } from '../../../core';
+import {
+  DevToolsStore,
+  IndexedDBInfo,
+  IndexedDBRecord,
+  isBrowser,
+  STORAGE_TYPES,
+  StorageManager,
+  StorageType,
+} from '../../../core';
 import { CHECK_ICON, CLOSE_ICON, PLUS_ICON, TRASH_ICON } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
+import { renderJsonTree } from '../../components/json-tree';
 
 export class StorageTabView {
   private container: HTMLElement;
   private listScrollContainer: HTMLElement | null = null;
   private clearBtn: HTMLButtonElement | null = null;
-  private storageType: 'localStorage' | 'sessionStorage' | 'cookie' = 'localStorage';
+  private storageType: StorageType = STORAGE_TYPES.LOCAL_STORAGE;
   private searchValue = '';
   private isAddingNew = false;
   private editingKey: string | null = null;
+
+  // IndexedDB State
+  private indexedDBs: IndexedDBInfo[] = [];
+  private selectedDBName: string | null = null;
+  private selectedStoreName: string | null = null;
+  private idbRecords: IndexedDBRecord[] = [];
+  private isLoadingIDB = false;
 
   constructor(_store?: DevToolsStore) {
     this.container = document.createElement('div');
@@ -19,32 +35,26 @@ export class StorageTabView {
   public render(): HTMLElement {
     this.container.innerHTML = '';
 
-    // Toolbar
+    // Toolbar (2-Row Layout: Row 1 = Search + Add + Clear, Row 2 = Storage / DB Selectors)
     const toolbar = document.createElement('div');
     toolbar.className = 'devtools-toolbar';
+    toolbar.style.display = 'flex';
+    toolbar.style.flexDirection = 'column';
+    toolbar.style.gap = '6px';
 
-    const storageSelect = document.createElement('select');
-    storageSelect.className = 'devtools-select';
-    storageSelect.style.width = '140px';
-    storageSelect.style.minWidth = '140px';
-    storageSelect.innerHTML = `
-      <option value="localStorage">localStorage</option>
-      <option value="sessionStorage">sessionStorage</option>
-      <option value="cookie">cookie</option>
-    `;
-    storageSelect.value = this.storageType;
-    storageSelect.addEventListener('change', (e) => {
-      this.storageType = (e.target as HTMLSelectElement).value as any;
-      this.isAddingNew = false;
-      this.editingKey = null;
-      this.updateList();
-    });
+    const row1 = document.createElement('div');
+    row1.style.display = 'flex';
+    row1.style.alignItems = 'center';
+    row1.style.gap = '6px';
+    row1.style.width = '100%';
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.className = 'devtools-search-input';
     searchInput.placeholder = 'Search key or value...';
     searchInput.value = this.searchValue;
+    searchInput.style.flex = '1';
+    searchInput.style.minWidth = '0';
     searchInput.addEventListener('input', (e) => {
       this.searchValue = (e.target as HTMLInputElement).value;
       this.updateList();
@@ -63,21 +73,101 @@ export class StorageTabView {
     this.clearBtn.className = 'devtools-btn devtools-btn-danger devtools-btn-icon-only';
     this.clearBtn.title = 'Clear Storage';
     this.clearBtn.innerHTML = TRASH_ICON;
-    this.clearBtn.addEventListener('click', () => {
+    this.clearBtn.addEventListener('click', async () => {
       if (
         window.confirm(
           `Are you sure you want to clear all entries in ${this.storageType}? This action cannot be undone.`
         )
       ) {
-        this.clearCurrentStorage();
+        await this.clearCurrentStorage();
         this.updateList();
       }
     });
 
-    toolbar.appendChild(storageSelect);
-    toolbar.appendChild(searchInput);
-    toolbar.appendChild(addBtn);
-    toolbar.appendChild(this.clearBtn);
+    row1.appendChild(searchInput);
+    if (this.storageType !== STORAGE_TYPES.INDEXED_DB) {
+      row1.appendChild(addBtn);
+    }
+    row1.appendChild(this.clearBtn);
+
+    const row2 = document.createElement('div');
+    row2.style.display = 'flex';
+    row2.style.alignItems = 'center';
+    row2.style.gap = '6px';
+    row2.style.width = '100%';
+    row2.style.overflowX = 'auto';
+    setupScrollLockGuard(row2);
+
+    const storageSelect = document.createElement('select');
+    storageSelect.className = 'devtools-select';
+    storageSelect.style.flex = '1';
+    storageSelect.style.minWidth = '120px';
+    storageSelect.innerHTML = `
+      <option value="${STORAGE_TYPES.LOCAL_STORAGE}">localStorage</option>
+      <option value="${STORAGE_TYPES.SESSION_STORAGE}">sessionStorage</option>
+      <option value="${STORAGE_TYPES.COOKIE}">cookie</option>
+      <option value="${STORAGE_TYPES.INDEXED_DB}">indexedDB</option>
+    `;
+    storageSelect.value = this.storageType;
+    storageSelect.addEventListener('change', async (e) => {
+      this.storageType = (e.target as HTMLSelectElement).value as any;
+      this.isAddingNew = false;
+      this.editingKey = null;
+
+      if (this.storageType === STORAGE_TYPES.INDEXED_DB) {
+        await this.loadIndexedDBs();
+      }
+      this.render();
+    });
+
+    row2.appendChild(storageSelect);
+
+    // If IndexedDB selected, add DB & Store selectors to toolbar row2
+    if (this.storageType === STORAGE_TYPES.INDEXED_DB) {
+      const dbSelect = document.createElement('select');
+      dbSelect.className = 'devtools-select';
+      dbSelect.style.flex = '1';
+      dbSelect.style.minWidth = '110px';
+      if (this.indexedDBs.length === 0) {
+        dbSelect.innerHTML = '<option value="">No DBs</option>';
+      } else {
+        dbSelect.innerHTML = this.indexedDBs
+          .map((db) => `<option value="${db.name}">${db.name} (v${db.version})</option>`)
+          .join('');
+        dbSelect.value = this.selectedDBName || '';
+      }
+      dbSelect.addEventListener('change', async (e) => {
+        this.selectedDBName = (e.target as HTMLSelectElement).value;
+        const dbInfo = this.indexedDBs.find((d) => d.name === this.selectedDBName);
+        this.selectedStoreName = dbInfo?.storeNames[0] || null;
+        await this.loadIDBRecords();
+        this.render();
+      });
+
+      const storeSelect = document.createElement('select');
+      storeSelect.className = 'devtools-select';
+      storeSelect.style.flex = '1';
+      storeSelect.style.minWidth = '110px';
+      const currentDB = this.indexedDBs.find((d) => d.name === this.selectedDBName);
+      if (!currentDB || currentDB.storeNames.length === 0) {
+        storeSelect.innerHTML = '<option value="">No Stores</option>';
+      } else {
+        storeSelect.innerHTML = currentDB.storeNames
+          .map((st) => `<option value="${st}">${st}</option>`)
+          .join('');
+        storeSelect.value = this.selectedStoreName || '';
+      }
+      storeSelect.addEventListener('change', async (e) => {
+        this.selectedStoreName = (e.target as HTMLSelectElement).value;
+        await this.loadIDBRecords();
+      });
+
+      row2.appendChild(dbSelect);
+      row2.appendChild(storeSelect);
+    }
+
+    toolbar.appendChild(row1);
+    toolbar.appendChild(row2);
 
     // List Container
     this.listScrollContainer = document.createElement('div');
@@ -87,8 +177,48 @@ export class StorageTabView {
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);
 
-    this.updateList();
+    if (this.storageType === 'indexedDB' && this.indexedDBs.length === 0) {
+      this.loadIndexedDBs();
+    } else {
+      this.updateList();
+    }
+
     return this.container;
+  }
+
+  private async loadIndexedDBs() {
+    this.isLoadingIDB = true;
+    this.indexedDBs = await StorageManager.getIndexedDBs();
+    if (this.indexedDBs.length > 0) {
+      if (!this.selectedDBName || !this.indexedDBs.some((d) => d.name === this.selectedDBName)) {
+        this.selectedDBName = this.indexedDBs[0].name;
+      }
+      const currentDB = this.indexedDBs.find((d) => d.name === this.selectedDBName);
+      if (currentDB && currentDB.storeNames.length > 0) {
+        if (!this.selectedStoreName || !currentDB.storeNames.includes(this.selectedStoreName)) {
+          this.selectedStoreName = currentDB.storeNames[0];
+        }
+      } else {
+        this.selectedStoreName = null;
+      }
+    } else {
+      this.selectedDBName = null;
+      this.selectedStoreName = null;
+    }
+    await this.loadIDBRecords();
+  }
+
+  private async loadIDBRecords() {
+    if (this.selectedDBName && this.selectedStoreName) {
+      this.idbRecords = await StorageManager.getIndexedDBRecords(
+        this.selectedDBName,
+        this.selectedStoreName
+      );
+    } else {
+      this.idbRecords = [];
+    }
+    this.isLoadingIDB = false;
+    this.render();
   }
 
   private getItems(): { key: string; value: string }[] {
@@ -96,21 +226,21 @@ export class StorageTabView {
     const items: { key: string; value: string }[] = [];
 
     try {
-      if (this.storageType === 'localStorage') {
+      if (this.storageType === STORAGE_TYPES.LOCAL_STORAGE) {
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
           if (key) {
             items.push({ key, value: localStorage.getItem(key) || '' });
           }
         }
-      } else if (this.storageType === 'sessionStorage') {
+      } else if (this.storageType === STORAGE_TYPES.SESSION_STORAGE) {
         for (let i = 0; i < sessionStorage.length; i++) {
           const key = sessionStorage.key(i);
           if (key) {
             items.push({ key, value: sessionStorage.getItem(key) || '' });
           }
         }
-      } else if (this.storageType === 'cookie') {
+      } else if (this.storageType === STORAGE_TYPES.COOKIE) {
         const cookies = document.cookie ? document.cookie.split('; ') : [];
         cookies.forEach((c) => {
           const [key, ...val] = c.split('=');
@@ -129,11 +259,11 @@ export class StorageTabView {
   private setItem(key: string, value: string) {
     if (!isBrowser || !key.trim()) return;
     try {
-      if (this.storageType === 'localStorage') {
+      if (this.storageType === STORAGE_TYPES.LOCAL_STORAGE) {
         localStorage.setItem(key.trim(), value);
-      } else if (this.storageType === 'sessionStorage') {
+      } else if (this.storageType === STORAGE_TYPES.SESSION_STORAGE) {
         sessionStorage.setItem(key.trim(), value);
-      } else if (this.storageType === 'cookie') {
+      } else if (this.storageType === STORAGE_TYPES.COOKIE) {
         document.cookie = `${encodeURIComponent(key.trim())}=${encodeURIComponent(value)}; path=/;`;
       }
     } catch {
@@ -142,14 +272,14 @@ export class StorageTabView {
     this.updateList();
   }
 
-  private clearCurrentStorage() {
+  private async clearCurrentStorage() {
     if (!isBrowser) return;
     try {
-      if (this.storageType === 'localStorage') {
+      if (this.storageType === STORAGE_TYPES.LOCAL_STORAGE) {
         localStorage.clear();
-      } else if (this.storageType === 'sessionStorage') {
+      } else if (this.storageType === STORAGE_TYPES.SESSION_STORAGE) {
         sessionStorage.clear();
-      } else if (this.storageType === 'cookie') {
+      } else if (this.storageType === STORAGE_TYPES.COOKIE) {
         const cookies = document.cookie ? document.cookie.split('; ') : [];
         cookies.forEach((c) => {
           const key = c.split('=')[0];
@@ -157,21 +287,39 @@ export class StorageTabView {
             document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
           }
         });
+      } else if (
+        this.storageType === STORAGE_TYPES.INDEXED_DB &&
+        this.selectedDBName &&
+        this.selectedStoreName
+      ) {
+        await StorageManager.clearIndexedDBStore(this.selectedDBName, this.selectedStoreName);
+        await this.loadIDBRecords();
       }
     } catch {
       // Ignore
     }
   }
 
-  private deleteItem(key: string) {
+  private async deleteItem(key: any) {
     if (!isBrowser) return;
     try {
-      if (this.storageType === 'localStorage') {
+      if (this.storageType === STORAGE_TYPES.LOCAL_STORAGE) {
         localStorage.removeItem(key);
-      } else if (this.storageType === 'sessionStorage') {
+      } else if (this.storageType === STORAGE_TYPES.SESSION_STORAGE) {
         sessionStorage.removeItem(key);
-      } else if (this.storageType === 'cookie') {
+      } else if (this.storageType === STORAGE_TYPES.COOKIE) {
         document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      } else if (
+        this.storageType === STORAGE_TYPES.INDEXED_DB &&
+        this.selectedDBName &&
+        this.selectedStoreName
+      ) {
+        await StorageManager.deleteIndexedDBRecord(
+          this.selectedDBName,
+          this.selectedStoreName,
+          key
+        );
+        await this.loadIDBRecords();
       }
     } catch {
       // Ignore
@@ -183,7 +331,12 @@ export class StorageTabView {
     if (!this.listScrollContainer) return;
     this.listScrollContainer.innerHTML = '';
 
-    // Add New Item Panel
+    if (this.storageType === STORAGE_TYPES.INDEXED_DB) {
+      this.renderIndexedDBList();
+      return;
+    }
+
+    // Add New Item Panel for KV storage
     if (this.isAddingNew) {
       const addPanel = document.createElement('div');
       addPanel.style.display = 'flex';
@@ -326,6 +479,124 @@ export class StorageTabView {
           window.confirm(`Are you sure you want to delete "${item.key}" from ${this.storageType}?`)
         ) {
           this.deleteItem(item.key);
+        }
+      });
+
+      tdAct.appendChild(delBtn);
+      tr.appendChild(tdKey);
+      tr.appendChild(tdVal);
+      tr.appendChild(tdAct);
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    this.listScrollContainer.appendChild(table);
+  }
+
+  private renderIndexedDBList() {
+    if (!this.listScrollContainer) return;
+
+    if (this.isLoadingIDB) {
+      const loading = document.createElement('div');
+      loading.style.textAlign = 'center';
+      loading.style.padding = '32px';
+      loading.style.color = 'var(--dev-text-muted)';
+      loading.style.fontSize = '12px';
+      loading.textContent = 'Loading IndexedDB databases...';
+      this.listScrollContainer.appendChild(loading);
+      return;
+    }
+
+    if (this.indexedDBs.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.textAlign = 'center';
+      empty.style.padding = '32px';
+      empty.style.color = 'var(--dev-text-muted)';
+      empty.style.fontSize = '12px';
+      empty.textContent = 'No IndexedDB databases found in this origin.';
+      this.listScrollContainer.appendChild(empty);
+      return;
+    }
+
+    if (this.clearBtn) {
+      this.clearBtn.disabled = this.idbRecords.length === 0;
+    }
+
+    const filtered = this.idbRecords.filter((rec) => {
+      if (!this.searchValue.trim()) return true;
+      const q = this.searchValue.toLowerCase();
+      const kStr = typeof rec.key === 'object' ? JSON.stringify(rec.key) : String(rec.key);
+      const vStr = typeof rec.value === 'object' ? JSON.stringify(rec.value) : String(rec.value);
+      return kStr.toLowerCase().includes(q) || vStr.toLowerCase().includes(q);
+    });
+
+    if (filtered.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.textAlign = 'center';
+      empty.style.padding = '32px';
+      empty.style.color = 'var(--dev-text-muted)';
+      empty.style.fontSize = '12px';
+      empty.textContent = `No records found in ${this.selectedDBName} / ${this.selectedStoreName}.`;
+      this.listScrollContainer.appendChild(empty);
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'devtools-table';
+
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+      <tr>
+        <th style="width:25%">Primary Key</th>
+        <th>Value Payload</th>
+        <th style="width:40px;text-align:center">Action</th>
+      </tr>
+    `;
+
+    const tbody = document.createElement('tbody');
+    filtered.forEach((rec) => {
+      const tr = document.createElement('tr');
+
+      const tdKey = document.createElement('td');
+      tdKey.style.fontWeight = '600';
+      tdKey.style.color = 'var(--dev-text-bright)';
+      tdKey.style.fontFamily = 'var(--dev-font-mono)';
+      tdKey.style.fontSize = '11px';
+      tdKey.textContent = typeof rec.key === 'object' ? JSON.stringify(rec.key) : String(rec.key);
+
+      const tdVal = document.createElement('td');
+      tdVal.style.color = 'var(--dev-text-muted)';
+      tdVal.style.wordBreak = 'break-all';
+
+      if (typeof rec.value === 'object' && rec.value !== null) {
+        tdVal.appendChild(renderJsonTree(rec.value));
+      } else if (typeof rec.value === 'string') {
+        try {
+          const parsed = JSON.parse(rec.value);
+          if (typeof parsed === 'object' && parsed !== null) {
+            tdVal.appendChild(renderJsonTree(parsed));
+          } else {
+            tdVal.textContent = rec.value;
+          }
+        } catch {
+          tdVal.textContent = rec.value;
+        }
+      } else {
+        tdVal.textContent = String(rec.value);
+      }
+
+      const tdAct = document.createElement('td');
+      tdAct.style.textAlign = 'center';
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'devtools-btn devtools-btn-danger devtools-btn-icon-only';
+      delBtn.title = 'Delete Record';
+      delBtn.innerHTML = CLOSE_ICON;
+      delBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (window.confirm(`Are you sure you want to delete entry key "${rec.key}"?`)) {
+          await this.deleteItem(rec.key);
         }
       });
 

@@ -6,6 +6,6 @@ export default defineConfig({
     alias: getDevToolsAliases(__dirname, '../..'),
   },
   server: {
-    port: 3003,
+    port: 3004,
   },
 });

@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { DevToolsStore } from '../../../../core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DevToolsStore, StorageManager } from '../../../../core';
 import { StorageTabView } from '../storage-tab';
 
 describe('StorageTabView', () => {
@@ -15,6 +15,10 @@ describe('StorageTabView', () => {
 
     store = new DevToolsStore();
     tabView = new StorageTabView(store);
+
+    vi.spyOn(StorageManager, 'getIndexedDBs').mockResolvedValue([
+      { name: 'AppCacheDB', version: 1, storeNames: ['users', 'settings'] },
+    ]);
   });
 
   it('should render storage items in table', () => {
@@ -39,7 +43,7 @@ describe('StorageTabView', () => {
     expect(text).not.toContain('user_theme');
   });
 
-  it('should switch between localStorage, sessionStorage, and cookie options', () => {
+  it('should switch between localStorage, sessionStorage, cookie, and indexedDB options', async () => {
     const el = tabView.render();
     const select = el.querySelector('select.devtools-select') as HTMLSelectElement;
 
@@ -50,5 +54,23 @@ describe('StorageTabView', () => {
     const text = el.textContent || '';
     expect(text).toContain('auth_token');
     expect(text).toContain('token_123');
+
+    select.value = 'indexedDB';
+    select.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 10));
+    expect(select.value).toBe('indexedDB');
+
+    // Verify DB selectors appear for indexedDB
+    let selects = el.querySelectorAll('select.devtools-select');
+    expect(selects.length).toBeGreaterThan(1);
+
+    // Switch back to localStorage
+    select.value = 'localStorage';
+    select.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 10));
+
+    // Verify DB selectors are removed and only main storageSelect remains
+    selects = el.querySelectorAll('select.devtools-select');
+    expect(selects.length).toBe(1);
   });
 });

@@ -53,6 +53,8 @@ describe('DrawerView', () => {
 
     customTabBtn.click();
     expect(store.getActiveTab()).toBe('custom_analytics');
-    expect(drawer.querySelector('#custom-tab-content')?.textContent).toBe('Custom Analytics Content');
+    expect(drawer.querySelector('#custom-tab-content')?.textContent).toBe(
+      'Custom Analytics Content'
+    );
   });
 });

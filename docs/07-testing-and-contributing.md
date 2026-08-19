@@ -15,7 +15,8 @@ mobile-devtools/
 ├── examples/
 │   ├── react/                  # React 19 test harness app (Port 3001)
 │   ├── vue/                    # Vue 3 test harness app (Port 3002)
-│   └── vanilla/                # Vanilla JS test harness app (Port 3003)
+│   ├── svelte/                 # Svelte 5 test harness app (Port 3003)
+│   └── vanilla/                # Vanilla JS test harness app (Port 3004)
 ├── packages/
 │   ├── mobile-devtools/        # Core unified published npm package
 │   └── config/
@@ -28,6 +29,11 @@ mobile-devtools/
 ---
 
 ## 🛠️ Development Setup
+
+### Prerequisites
+
+- **Node.js**: `>= 24.0.0` (v24.4.1+ recommended)
+- **pnpm**: `>= 9.15.0`
 
 ```bash
 # 1. Clone repository

@@ -11,17 +11,17 @@ import { VERSION } from 'mobile-devtools';
 
 export const Navbar: React.FC = () => {
   return (
-    <header className="sticky top-0 z-50 w-full bg-dev-bg-100/90 backdrop-blur-md border-b border-dev-border transition-colors duration-200 pt-[env(safe-area-inset-top)]">
-      <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <header className="border-dev-border bg-dev-bg-100/90 sticky top-0 z-50 w-full border-b pt-[env(safe-area-inset-top)] backdrop-blur-md transition-colors duration-200">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         {/* Logo Group */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="p-1.5 rounded-lg bg-dev-bg-300 border border-dev-border text-dev-text-bright group-hover:border-neutral-400 transition-colors">
-            <Smartphone className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+        <Link to="/" className="group flex items-center gap-2.5">
+          <div className="border-dev-border bg-dev-bg-300 text-dev-text-bright rounded-lg border p-1.5 transition-colors group-hover:border-neutral-400">
+            <Smartphone className="size-5 text-emerald-500 dark:text-emerald-400" />
           </div>
-          <span className="font-extrabold text-sm sm:text-base text-dev-text-bright tracking-tight">
+          <span className="text-dev-text-bright text-sm font-extrabold tracking-tight sm:text-base">
             mobile-devtools
           </span>
-          <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-dev-bg-300 border border-dev-border text-[11px] font-mono font-semibold text-dev-text-muted">
+          <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted hidden rounded-full border px-2 py-0.5 font-mono text-[11px] font-semibold sm:inline-block">
             v{VERSION}
           </span>
         </Link>
@@ -34,7 +34,7 @@ export const Navbar: React.FC = () => {
           {/* GitHub Button */}
           <a href={URLS.GITHUB} target="_blank" rel="noreferrer">
             <Button variant="primary" size="sm">
-              <GithubIcon className="w-4 h-4 fill-current shrink-0" />
+              <GithubIcon className="size-4 shrink-0 fill-current" />
               <span>GitHub</span>
             </Button>
           </a>

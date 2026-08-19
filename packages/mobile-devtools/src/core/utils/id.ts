@@ -5,11 +5,7 @@ import { isBrowser } from './env';
  * @param prefix Optional prefix string (e.g. 'req', 'ws', 'log', 'f')
  */
 export function generateId(prefix = 'id'): string {
-  if (
-    isBrowser &&
-    typeof crypto !== 'undefined' &&
-    typeof crypto.randomUUID === 'function'
-  ) {
+  if (isBrowser && typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return `${prefix}_${crypto.randomUUID().substring(0, 8)}`;
   }
 

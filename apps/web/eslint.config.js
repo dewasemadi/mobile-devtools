@@ -1,14 +1,34 @@
 import boundaries from 'eslint-plugin-boundaries';
+import tailwind from 'eslint-plugin-tailwindcss';
 import { config as reactJsConfig } from '@mobile-devtools/eslint-config/react-internal';
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
   ...reactJsConfig,
   {
+    ...tailwind.configs.recommended,
+    settings: {
+      tailwindcss: {
+        cssConfigPath: 'src/app/globals.css',
+      },
+    },
+    rules: {
+      ...tailwind.configs.recommended.rules,
+      'tailwindcss/classnames-order': 'off',
+      'tailwindcss/no-custom-classname': 'off',
+      'tailwindcss/enforces-shorthand': 'off',
+      'tailwindcss/no-unnecessary-arbitrary-value': 'off',
+      'tailwindcss/no-contradicting-classname': 'error',
+    },
+  },
+  {
     plugins: {
       boundaries,
     },
     settings: {
+      tailwindcss: {
+        cssConfigPath: 'src/app/globals.css',
+      },
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,

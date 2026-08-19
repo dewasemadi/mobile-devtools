@@ -15,7 +15,7 @@ export interface CustomTabDefinition {
   id: string;
   title: string;
   icon?: string;
-  render: (container: HTMLElement) => void | (() => void);
+  render?: (container: HTMLElement) => void;
 }
 ```
 
@@ -47,13 +47,9 @@ export default function App() {
             `;
 
             const btn = container.querySelector('#btn-trigger');
-            const handleClick = () => console.log('[Analytics Event] Button Clicked!');
-            btn?.addEventListener('click', handleClick);
-
-            // Optional cleanup callback when tab changes
-            return () => {
-              btn?.removeEventListener('click', handleClick);
-            };
+            btn?.addEventListener('click', () => {
+              console.log('[Analytics Event] Button Clicked!');
+            });
           },
         },
       ]}

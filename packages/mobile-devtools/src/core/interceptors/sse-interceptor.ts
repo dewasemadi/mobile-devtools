@@ -1,4 +1,4 @@
-import { NETWORK_TYPES } from '../constants';
+import { HTTP_METHODS, NETWORK_FRAME_TYPES, NETWORK_TYPES } from '../constants';
 import { DevToolsStore } from '../stores/devtools-store';
 import { isBrowser } from '../utils/env';
 import { generateId } from '../utils/id';
@@ -27,7 +27,7 @@ export class SSEInterceptor {
       store.addNetworkRequest({
         id,
         url: String(url),
-        method: 'SSE',
+        method: HTTP_METHODS.SSE,
         status: 200,
         statusText: 'Connecting',
         type: NETWORK_TYPES.EVENTSOURCE,
@@ -42,7 +42,7 @@ export class SSEInterceptor {
       es.addEventListener('message', (event: MessageEvent) => {
         store.addNetworkFrame(id, {
           id: generateId('f'),
-          type: 'received',
+          type: NETWORK_FRAME_TYPES.RECEIVED,
           data: event.data,
           timestamp: Date.now(),
         });
@@ -54,7 +54,7 @@ export class SSEInterceptor {
           originalAddEventListener(type, (event: MessageEvent) => {
             store.addNetworkFrame(id, {
               id: generateId('f'),
-              type: 'received',
+              type: NETWORK_FRAME_TYPES.RECEIVED,
               data: event?.data !== undefined ? event.data : String(event),
               timestamp: Date.now(),
             });

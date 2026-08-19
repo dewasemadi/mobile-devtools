@@ -7,7 +7,13 @@ describe('bug-exporter', () => {
 
   beforeEach(() => {
     store = new DevToolsStore();
-    store.addLog({ id: '1', level: 'error', args: ['Failed to fetch users'], timestamp: Date.now(), count: 1 });
+    store.addLog({
+      id: '1',
+      level: 'error',
+      args: ['Failed to fetch users'],
+      timestamp: Date.now(),
+      count: 1,
+    });
     store.addNetworkRequest({
       id: 'net_1',
       url: 'https://api.example.com/data',

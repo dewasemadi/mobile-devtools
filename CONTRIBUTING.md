@@ -15,17 +15,21 @@ Please note that this project is governed by the [Contributor Covenant Code of C
 `mobile-devtools` is managed as a monorepo using **pnpm workspaces** and **Turborepo**.
 
 ### Prerequisites
-- Node.js `>= 20.0.0`
-- pnpm `>= 9.0.0` (`npm install -g pnpm`)
+
+- Node.js `>= 24.0.0` (v24.4.1+ recommended)
+- pnpm `>= 9.15.0` (`npm install -g pnpm@9.15.0`)
 
 ### Setup Instructions
+
 1. **Fork & Clone Repository**:
+
    ```bash
    git clone https://github.com/dewasemadi/mobile-devtools.git
    cd mobile-devtools
    ```
 
 2. **Install Workspace Dependencies**:
+
    ```bash
    pnpm install
    ```
@@ -47,12 +51,15 @@ Please note that this project is governed by the [Contributor Covenant Code of C
 All submitted pull requests must pass type checks, unit tests, and Playwright E2E tests.
 
 ### Type Checks
+
 ```bash
 pnpm check-types
 ```
 
 ### Unit Testing (`Vitest`)
+
 Write unit tests for new features in `src/**/__tests__/*.test.ts`:
+
 ```bash
 # Run unit test suite
 pnpm test
@@ -62,7 +69,9 @@ pnpm test:coverage
 ```
 
 ### End-to-End Testing (`Playwright`)
+
 Write E2E tests in `apps/web/e2e/*.spec.ts`:
+
 ```bash
 # Run Playwright E2E suite
 pnpm test:e2e

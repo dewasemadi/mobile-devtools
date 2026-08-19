@@ -1,4 +1,6 @@
-export type StorageType = 'localStorage' | 'sessionStorage' | 'cookie';
+import { StorageType } from '../constants';
+
+export type { StorageType };
 
 export interface StorageItem {
   key: string;
@@ -12,4 +14,15 @@ export interface CookieItem {
   domain?: string;
   path?: string;
   expires?: string;
+}
+
+export interface IndexedDBInfo {
+  name: string;
+  version: number;
+  storeNames: string[];
+}
+
+export interface IndexedDBRecord {
+  key: any;
+  value: any;
 }

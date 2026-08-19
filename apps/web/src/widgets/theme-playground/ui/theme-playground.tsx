@@ -225,11 +225,11 @@ export const ThemePlayground: React.FC = () => {
           {'{'}
           <div className="pl-6">
             <span className="text-syntax-parameter">maxLogLimit</span>:{' '}
-            <span className="text-purple-400 font-semibold">{maxLogLimit}</span>,
+            <span className="font-semibold text-purple-400">{maxLogLimit}</span>,
           </div>
           <div className="pl-6">
             <span className="text-syntax-parameter">maxNetworkLimit</span>:{' '}
-            <span className="text-purple-400 font-semibold">100</span>,
+            <span className="font-semibold text-purple-400">100</span>,
           </div>
           <div className="pl-6">
             <span className="text-syntax-parameter">enableConsoleInterceptor</span>:{' '}
@@ -269,7 +269,7 @@ export const ThemePlayground: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       {/* Live Single MobileDevTools Component */}
       <MobileDevTools
         forceEnable
@@ -297,12 +297,12 @@ export const ThemePlayground: React.FC = () => {
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-sky-500 dark:text-sky-400" />
-            <h2 className="text-xl sm:text-2xl font-bold text-dev-text-bright tracking-tight">
+            <Sliders className="size-5 text-sky-500 dark:text-sky-400" />
+            <h2 className="text-dev-text-bright text-xl font-bold tracking-tight sm:text-2xl">
               Live Props & Theme Customizer
             </h2>
           </div>
-          <p className="text-sm text-dev-text-muted mt-1 font-sans">
+          <p className="text-dev-text-muted mt-1 font-sans text-sm">
             Customize DevTools title, custom icon, mode, and position live in real-time.
           </p>
         </div>
@@ -311,38 +311,38 @@ export const ThemePlayground: React.FC = () => {
         <button
           type="button"
           onClick={resetToDefaults}
-          className="px-3 py-1.5 rounded-md bg-dev-bg-300 border border-dev-border text-dev-text-muted hover:text-dev-text-bright text-xs font-sans font-medium transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+          className="border-dev-border bg-dev-bg-300 text-dev-text-muted hover:text-dev-text-bright flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md border px-3 py-1.5 font-sans text-xs font-medium transition-colors"
           title="Reset to Library Default Settings"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <RotateCcw className="size-3.5" />
           <span className="hidden sm:inline">Reset Defaults</span>
         </button>
       </div>
 
       {/* Main Container Card */}
-      <div className="bg-dev-bg-100 border border-dev-border rounded-lg p-5 sm:p-6 space-y-6">
+      <div className="border-dev-border bg-dev-bg-100 space-y-6 rounded-lg border p-5 sm:p-6">
         {/* Panel 1: Brand & Theme */}
         <div className="space-y-4">
-          <h3 className="text-xs font-sans font-semibold text-dev-text-muted border-b border-dev-border pb-2">
+          <h3 className="border-dev-border text-dev-text-muted border-b pb-2 font-sans text-xs font-semibold">
             Brand & Theme
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Title */}
             <div className="space-y-1.5">
-              <label className="text-xs font-sans font-semibold text-dev-text-bright">Title</label>
+              <label className="text-dev-text-bright font-sans text-xs font-semibold">Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-md bg-dev-bg-300 border border-dev-border text-dev-text-bright text-xs focus:outline-none focus:border-sky-500 font-medium"
+                className="border-dev-border bg-dev-bg-300 text-dev-text-bright w-full rounded-md border px-3.5 py-2 text-xs font-medium focus:border-sky-500 focus:outline-none"
                 placeholder="DevTools"
               />
             </div>
 
             {/* Custom Icon & Image Upload */}
             <div className="space-y-1.5">
-              <label className="text-xs font-sans font-semibold text-dev-text-bright flex items-center justify-between">
+              <label className="text-dev-text-bright flex items-center justify-between font-sans text-xs font-semibold">
                 <span>Icon (Emoji, Image URL, or Upload)</span>
               </label>
               <div className="flex items-center gap-2">
@@ -350,7 +350,7 @@ export const ThemePlayground: React.FC = () => {
                   type="text"
                   value={icon.startsWith('data:') ? '[Base64 Image Uploaded]' : icon}
                   onChange={(e) => setIcon(e.target.value)}
-                  className="flex-1 px-3.5 py-2 rounded-md bg-dev-bg-300 border border-dev-border text-dev-text-bright text-xs focus:outline-none focus:border-sky-500 font-mono"
+                  className="border-dev-border bg-dev-bg-300 text-dev-text-bright flex-1 rounded-md border px-3.5 py-2 font-mono text-xs focus:border-sky-500 focus:outline-none"
                   placeholder="Default Icon"
                 />
 
@@ -358,10 +358,10 @@ export const ThemePlayground: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-2 rounded-md bg-dev-bg-300 border border-dev-border text-dev-text-bright text-xs font-sans hover:border-sky-500 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                  className="border-dev-border bg-dev-bg-300 text-dev-text-bright flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md border px-3 py-2 font-sans text-xs transition-colors hover:border-sky-500"
                   title="Upload Custom Image Icon"
                 >
-                  <Upload className="w-3.5 h-3.5 text-sky-400" />
+                  <Upload className="size-3.5 text-sky-400" />
                   <span>Upload</span>
                 </button>
                 <input
@@ -375,16 +375,16 @@ export const ThemePlayground: React.FC = () => {
 
               {/* Quick Icon Presets */}
               <div className="flex items-center gap-1.5 pt-1">
-                <span className="text-[11px] font-sans text-dev-text-muted mr-1">Presets:</span>
+                <span className="text-dev-text-muted mr-1 font-sans text-[11px]">Presets:</span>
                 {presetIcons.map((pIcon) => (
                   <button
                     key={pIcon}
                     type="button"
                     onClick={() => setIcon(pIcon)}
-                    className={`w-6 h-6 rounded-md text-xs border cursor-pointer flex items-center justify-center transition-colors ${
+                    className={`flex size-6 cursor-pointer items-center justify-center rounded-md border text-xs transition-colors ${
                       icon === pIcon
                         ? 'bg-dev-bg-300 border-sky-500'
-                        : 'bg-dev-bg-300/30 border-dev-border hover:border-dev-text-muted'
+                        : 'border-dev-border bg-dev-bg-300/30 hover:border-dev-text-muted'
                     }`}
                   >
                     {pIcon}
@@ -394,7 +394,7 @@ export const ThemePlayground: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIcon('')}
-                    className="text-[11px] font-sans text-dev-text-muted hover:text-dev-text-bright underline ml-2 cursor-pointer"
+                    className="text-dev-text-muted hover:text-dev-text-bright ml-2 cursor-pointer font-sans text-[11px] underline"
                   >
                     Clear
                   </button>
@@ -404,10 +404,10 @@ export const ThemePlayground: React.FC = () => {
 
             {/* Theme Mode */}
             <div className="space-y-1.5">
-              <label className="text-xs font-sans font-semibold text-dev-text-bright">
+              <label className="text-dev-text-bright font-sans text-xs font-semibold">
                 Theme Mode
               </label>
-              <div className="grid grid-cols-2 gap-2 bg-dev-bg-300 p-1 rounded-md border border-dev-border">
+              <div className="border-dev-border bg-dev-bg-300 grid grid-cols-2 gap-2 rounded-md border p-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -415,9 +415,9 @@ export const ThemePlayground: React.FC = () => {
                     setBgColor('');
                     setCardBg('');
                   }}
-                  className={`py-1.5 px-3 rounded-md text-xs font-sans font-medium transition-colors cursor-pointer ${
+                  className={`cursor-pointer rounded-md px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
                     mode === 'dark'
-                      ? 'bg-dev-bg-100 border border-dev-border text-dev-text-bright font-semibold'
+                      ? 'border-dev-border bg-dev-bg-100 text-dev-text-bright border font-semibold'
                       : 'text-dev-text-muted hover:text-dev-text-bright'
                   }`}
                 >
@@ -430,9 +430,9 @@ export const ThemePlayground: React.FC = () => {
                     setBgColor('#ffffff');
                     setCardBg('#f8fafc');
                   }}
-                  className={`py-1.5 px-3 rounded-md text-xs font-sans font-medium transition-colors cursor-pointer ${
+                  className={`cursor-pointer rounded-md px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
                     mode === 'light'
-                      ? 'bg-dev-bg-100 border border-dev-border text-dev-text-bright font-semibold'
+                      ? 'border-dev-border bg-dev-bg-100 text-dev-text-bright border font-semibold'
                       : 'text-dev-text-muted hover:text-dev-text-bright'
                   }`}
                 >
@@ -443,7 +443,7 @@ export const ThemePlayground: React.FC = () => {
 
             {/* Background Presets */}
             <div className="space-y-1.5">
-              <label className="text-xs font-sans font-semibold text-dev-text-bright">
+              <label className="text-dev-text-bright font-sans text-xs font-semibold">
                 Background Palette
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -459,14 +459,14 @@ export const ThemePlayground: React.FC = () => {
                         if (preset.name === 'Light') setMode('light');
                         else if (mode === 'light') setMode('dark');
                       }}
-                      className={`py-1.5 px-3 rounded-md text-xs font-sans font-medium border text-left flex items-center gap-2 cursor-pointer transition-colors ${
+                      className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-left font-sans text-xs font-medium transition-colors ${
                         isSelected
-                          ? 'bg-dev-bg-300 border-sky-500 text-dev-text-bright font-semibold'
-                          : 'bg-dev-bg-300/40 border-dev-border text-dev-text-muted hover:text-dev-text-bright'
+                          ? 'bg-dev-bg-300 text-dev-text-bright border-sky-500 font-semibold'
+                          : 'border-dev-border bg-dev-bg-300/40 text-dev-text-muted hover:text-dev-text-bright'
                       }`}
                     >
                       <span
-                        className="w-3 h-3 rounded-full border border-dev-border shrink-0"
+                        className="border-dev-border size-3 shrink-0 rounded-full border"
                         style={{ backgroundColor: preset.bg }}
                       />
                       <span>{preset.name}</span>
@@ -478,10 +478,10 @@ export const ThemePlayground: React.FC = () => {
           </div>
 
           {/* Accent Color Swatches */}
-          <div className="space-y-1.5 pt-1 border-t border-dev-border">
-            <label className="text-xs font-sans font-semibold text-dev-text-bright flex items-center justify-between">
+          <div className="border-dev-border space-y-1.5 border-t pt-1">
+            <label className="text-dev-text-bright flex items-center justify-between font-sans text-xs font-semibold">
               <span>Accent Color</span>
-              <span className="font-mono text-[11px] text-dev-text-muted">
+              <span className="text-dev-text-muted font-mono text-[11px]">
                 {accentColor || 'default'}
               </span>
             </label>
@@ -491,7 +491,7 @@ export const ThemePlayground: React.FC = () => {
                   key={item.color}
                   type="button"
                   onClick={() => setAccentColor(item.color)}
-                  className={`w-6 h-6 rounded-full transition-transform cursor-pointer border ${
+                  className={`size-6 cursor-pointer rounded-full border transition-transform ${
                     accentColor === item.color
                       ? 'scale-110 border-white ring-2 ring-sky-500/40'
                       : 'border-transparent hover:scale-105'
@@ -500,19 +500,19 @@ export const ThemePlayground: React.FC = () => {
                   title={item.name}
                 />
               ))}
-              <div className="w-6 h-6 rounded-full overflow-hidden border border-dev-border shrink-0 ml-1 cursor-pointer">
+              <div className="border-dev-border ml-1 size-6 shrink-0 cursor-pointer overflow-hidden rounded-full border">
                 <input
                   type="color"
                   value={accentColor || '#0070f3'}
                   onChange={(e) => setAccentColor(e.target.value)}
-                  className="w-10 h-10 -m-2 bg-transparent border-0 cursor-pointer p-0"
+                  className="-m-2 size-10 cursor-pointer border-0 bg-transparent p-0"
                 />
               </div>
               {accentColor && (
                 <button
                   type="button"
                   onClick={() => setAccentColor('')}
-                  className="text-[11px] font-sans text-dev-text-muted hover:text-dev-text-bright underline ml-2 cursor-pointer"
+                  className="text-dev-text-muted hover:text-dev-text-bright ml-2 cursor-pointer font-sans text-[11px] underline"
                 >
                   Clear Accent
                 </button>
@@ -522,21 +522,21 @@ export const ThemePlayground: React.FC = () => {
         </div>
 
         {/* Panel 2: Screen & Behavior Props */}
-        <div className="space-y-4 pt-2 border-t border-dev-border">
-          <h3 className="text-xs font-sans font-semibold text-dev-text-muted border-b border-dev-border pb-2">
+        <div className="border-dev-border space-y-4 border-t pt-2">
+          <h3 className="border-dev-border text-dev-text-muted border-b pb-2 font-sans text-xs font-semibold">
             Screen & Behavior
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Position Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-sans font-semibold text-dev-text-bright">
+              <label className="text-dev-text-bright font-sans text-xs font-semibold">
                 Position
               </label>
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value as BadgePositionPreset)}
-                className="w-full appearance-none px-3.5 pr-10 py-2 rounded-md bg-dev-bg-300 border border-dev-border text-dev-text-bright text-xs focus:outline-none focus:border-sky-500 font-mono bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%2394a3b8%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpolyline%20points=%276%209%2012%2015%2018%209%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:16px_16px] bg-[right_12px_center] bg-no-repeat cursor-pointer"
+                className="border-dev-border bg-dev-bg-300 text-dev-text-bright w-full cursor-pointer appearance-none rounded-md border bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%2394a3b8%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpolyline%20points=%276%209%2012%2015%2018%209%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:16px_16px] bg-[right_12px_center] bg-no-repeat px-3.5 py-2 pr-10 font-mono text-xs focus:border-sky-500 focus:outline-none"
               >
                 {positionPresets.map((p) => (
                   <option key={p.value} value={p.value}>
@@ -548,13 +548,13 @@ export const ThemePlayground: React.FC = () => {
 
             {/* Initial Tab Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-sans font-semibold text-dev-text-bright">
+              <label className="text-dev-text-bright font-sans text-xs font-semibold">
                 Initial Tab
               </label>
               <select
                 value={initialTab}
                 onChange={(e) => setInitialTab(e.target.value as DevToolsTabId)}
-                className="w-full appearance-none px-3.5 pr-10 py-2 rounded-md bg-dev-bg-300 border border-dev-border text-dev-text-bright text-xs focus:outline-none focus:border-sky-500 font-mono bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%2394a3b8%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpolyline%20points=%276%209%2012%2015%2018%209%27%3e%3c/polyline%3e%3c/svg%3e')] bg-size-[16px_16px] bg-position-[right_12px_center] bg-no-repeat cursor-pointer"
+                className="border-dev-border bg-dev-bg-300 text-dev-text-bright w-full cursor-pointer appearance-none rounded-md border bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%2394a3b8%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpolyline%20points=%276%209%2012%2015%2018%209%27%3e%3c/polyline%3e%3c/svg%3e')] bg-size-[16px_16px] bg-position-[right_12px_center] bg-no-repeat px-3.5 py-2 pr-10 font-mono text-xs focus:border-sky-500 focus:outline-none"
               >
                 <option value="console">console</option>
                 <option value="elements">elements</option>
@@ -567,7 +567,7 @@ export const ThemePlayground: React.FC = () => {
 
           {/* Enabled Tabs Filter */}
           <div className="space-y-1.5">
-            <label className="text-xs font-sans font-semibold text-dev-text-bright">
+            <label className="text-dev-text-bright font-sans text-xs font-semibold">
               Enabled Tabs
             </label>
             <div className="flex flex-wrap gap-2">
@@ -578,10 +578,10 @@ export const ThemePlayground: React.FC = () => {
                     key={t.id}
                     type="button"
                     onClick={() => toggleTab(t.id)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-sans font-medium border cursor-pointer transition-colors ${
+                    className={`cursor-pointer rounded-md border px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
                       isChecked
-                        ? 'bg-dev-bg-300 border-sky-500 text-dev-text-bright font-semibold'
-                        : 'bg-dev-bg-300/40 border-dev-border text-dev-text-muted opacity-60'
+                        ? 'bg-dev-bg-300 text-dev-text-bright border-sky-500 font-semibold'
+                        : 'border-dev-border bg-dev-bg-300/40 text-dev-text-muted opacity-60'
                     }`}
                   >
                     {t.label}
@@ -592,20 +592,20 @@ export const ThemePlayground: React.FC = () => {
           </div>
 
           {/* Custom Styled Checkboxes */}
-          <div className="flex flex-wrap items-center gap-y-3 gap-x-6 pt-1">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
             <button
               type="button"
               onClick={() => setDefaultOpenConfig(!defaultOpenConfig)}
-              className="flex items-center gap-2 text-xs font-sans font-medium text-dev-text-bright cursor-pointer select-none"
+              className="text-dev-text-bright flex cursor-pointer items-center gap-2 font-sans text-xs font-medium select-none"
             >
               <span
-                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                className={`flex size-4 items-center justify-center rounded border transition-colors ${
                   defaultOpenConfig
-                    ? 'bg-sky-500 border-sky-500 text-white'
-                    : 'bg-dev-bg-300 border-dev-border text-transparent hover:border-sky-500'
+                    ? 'border-sky-500 bg-sky-500 text-white'
+                    : 'border-dev-border bg-dev-bg-300 text-transparent hover:border-sky-500'
                 }`}
               >
-                <Check className="w-3 h-3 stroke-3" />
+                <Check className="size-3 stroke-3" />
               </span>
               <span>defaultOpen</span>
             </button>
@@ -613,16 +613,16 @@ export const ThemePlayground: React.FC = () => {
             <button
               type="button"
               onClick={() => setAutoSnapBadge(!autoSnapBadge)}
-              className="flex items-center gap-2 text-xs font-sans font-medium text-dev-text-bright cursor-pointer select-none"
+              className="text-dev-text-bright flex cursor-pointer items-center gap-2 font-sans text-xs font-medium select-none"
             >
               <span
-                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                className={`flex size-4 items-center justify-center rounded border transition-colors ${
                   autoSnapBadge
-                    ? 'bg-sky-500 border-sky-500 text-white'
-                    : 'bg-dev-bg-300 border-dev-border text-transparent hover:border-sky-500'
+                    ? 'border-sky-500 bg-sky-500 text-white'
+                    : 'border-dev-border bg-dev-bg-300 text-transparent hover:border-sky-500'
                 }`}
               >
-                <Check className="w-3 h-3 stroke-3" />
+                <Check className="size-3 stroke-3" />
               </span>
               <span>autoSnapBadge</span>
             </button>
@@ -630,16 +630,16 @@ export const ThemePlayground: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowBadge(!showBadge)}
-              className="flex items-center gap-2 text-xs font-sans font-medium text-dev-text-bright cursor-pointer select-none"
+              className="text-dev-text-bright flex cursor-pointer items-center gap-2 font-sans text-xs font-medium select-none"
             >
               <span
-                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                className={`flex size-4 items-center justify-center rounded border transition-colors ${
                   showBadge
-                    ? 'bg-sky-500 border-sky-500 text-white'
-                    : 'bg-dev-bg-300 border-dev-border text-transparent hover:border-sky-500'
+                    ? 'border-sky-500 bg-sky-500 text-white'
+                    : 'border-dev-border bg-dev-bg-300 text-transparent hover:border-sky-500'
                 }`}
               >
-                <Check className="w-3 h-3 stroke-3" />
+                <Check className="size-3 stroke-3" />
               </span>
               <span>showBadge</span>
             </button>
@@ -647,16 +647,16 @@ export const ThemePlayground: React.FC = () => {
             <button
               type="button"
               onClick={() => setShakeToToggle(!shakeToToggle)}
-              className="flex items-center gap-2 text-xs font-sans font-medium text-dev-text-bright cursor-pointer select-none"
+              className="text-dev-text-bright flex cursor-pointer items-center gap-2 font-sans text-xs font-medium select-none"
             >
               <span
-                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                className={`flex size-4 items-center justify-center rounded border transition-colors ${
                   shakeToToggle
-                    ? 'bg-sky-500 border-sky-500 text-white'
-                    : 'bg-dev-bg-300 border-dev-border text-transparent hover:border-sky-500'
+                    ? 'border-sky-500 bg-sky-500 text-white'
+                    : 'border-dev-border bg-dev-bg-300 text-transparent hover:border-sky-500'
                 }`}
               >
-                <Check className="w-3 h-3 stroke-3" />
+                <Check className="size-3 stroke-3" />
               </span>
               <span>shakeToToggle</span>
             </button>
@@ -664,31 +664,31 @@ export const ThemePlayground: React.FC = () => {
         </div>
 
         {/* Panel 3: Vibrant Syntax-Highlighted Code Output Card */}
-        <div className="border border-dev-border rounded-lg overflow-hidden mt-6">
-          <div className="px-4 py-2.5 bg-dev-bg-300 border-b border-dev-border flex items-center justify-between">
+        <div className="border-dev-border mt-6 overflow-hidden rounded-lg border">
+          <div className="border-dev-border bg-dev-bg-300 flex items-center justify-between border-b px-4 py-2.5">
             <div className="flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-purple-400" />
-              <span className="text-xs font-mono text-dev-text-muted">Generated Configuration</span>
+              <Sliders className="size-4 text-purple-400" />
+              <span className="text-dev-text-muted font-mono text-xs">Generated Configuration</span>
             </div>
             <button
               type="button"
               onClick={handleCopy}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-dev-bg-200 border border-dev-border text-dev-text-muted hover:text-dev-text-bright text-xs font-mono transition-colors cursor-pointer"
+              className="border-dev-border bg-dev-bg-200 text-dev-text-muted hover:text-dev-text-bright inline-flex cursor-pointer items-center gap-1 rounded-md border px-2.5 py-1 font-mono text-xs transition-colors"
             >
               {copied ? (
                 <>
-                  <Check className="w-3 h-3 text-emerald-400" />
-                  <span className="text-emerald-400 font-bold">Copied</span>
+                  <Check className="size-3 text-emerald-400" />
+                  <span className="font-bold text-emerald-400">Copied</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-3 h-3 text-dev-text-muted" />
+                  <Copy className="text-dev-text-muted size-3" />
                   <span>Copy</span>
                 </>
               )}
             </button>
           </div>
-          <pre className="p-4 sm:p-5 font-mono text-xs text-dev-text-main overflow-x-auto leading-relaxed bg-dev-bg-100">
+          <pre className="bg-dev-bg-100 text-dev-text-main overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:p-5">
             {renderHighlightedConfig()}
           </pre>
         </div>

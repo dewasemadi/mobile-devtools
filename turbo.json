@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "globalEnv": ["CF_PAGES", "NO_CLOUDFLARE", "NODE_ENV", "CI"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

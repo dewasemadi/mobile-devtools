@@ -10,7 +10,12 @@ export class FloatingBadgeView {
   private store: DevToolsStore;
   private badgeElement: HTMLElement;
   private currentPos: DragPosition;
-  private dragStartPos: { startX: number; startY: number; initialX: number; initialY: number } | null = null;
+  private dragStartPos: {
+    startX: number;
+    startY: number;
+    initialX: number;
+    initialY: number;
+  } | null = null;
   private hasMoved = false;
   private unsubscribeStore: (() => void) | null = null;
 
@@ -78,10 +83,16 @@ export class FloatingBadgeView {
     // HTML Content
     let dotHtml = '';
     if (config.icon) {
-      if (typeof config.icon === 'string' && (config.icon.startsWith('http') || config.icon.startsWith('data:'))) {
+      if (
+        typeof config.icon === 'string' &&
+        (config.icon.startsWith('http') || config.icon.startsWith('data:'))
+      ) {
         dotHtml = `<img src="${config.icon}" style="width:16px;height:16px;object-fit:contain;margin-right:2px;" alt="" />`;
       } else {
-        dotHtml = typeof config.icon === 'string' ? `<span style="font-size:14px;margin-right:2px">${config.icon}</span>` : '';
+        dotHtml =
+          typeof config.icon === 'string'
+            ? `<span style="font-size:14px;margin-right:2px">${config.icon}</span>`
+            : '';
       }
     } else {
       let statusClass = '';
