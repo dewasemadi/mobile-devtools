@@ -73,6 +73,19 @@ describe('DevToolsStore', () => {
     expect(store.getEffectiveThemeMode()).toBeDefined();
   });
 
+  it('should preserve theme mode and position from localStorage even when updateConfig is called', () => {
+    localStorage.setItem('__mobile_devtools_theme__', 'light');
+    localStorage.setItem('__mobile_devtools_position__', JSON.stringify({ x: 50, y: 150 }));
+
+    const savedStore = new DevToolsStore({ theme: { mode: 'dark' }, position: 'bottom-right' });
+    expect(savedStore.getThemeMode()).toBe('light');
+    expect(savedStore.getBadgePosition()).toEqual({ x: 50, y: 150 });
+
+    savedStore.updateConfig({ theme: { mode: 'dark' }, position: 'bottom-right' });
+    expect(savedStore.getThemeMode()).toBe('light');
+    expect(savedStore.getBadgePosition()).toEqual({ x: 50, y: 150 });
+  });
+
   it('should manage badge position and persistence', () => {
     const newPos = { x: 100, y: 200 };
     store.setBadgePosition(newPos);

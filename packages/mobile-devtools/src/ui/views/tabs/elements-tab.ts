@@ -463,6 +463,8 @@ export class ElementsTabView {
     const titleRow = document.createElement('div');
     titleRow.className = 'devtools-toolbar';
     titleRow.style.padding = '6px 0';
+    titleRow.style.justifyContent = 'space-between';
+    titleRow.style.alignItems = 'center';
 
     const title = document.createElement('div');
     title.className = 'devtools-section-title';
