@@ -36,13 +36,13 @@
 ## 📸 Showcase
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/console.png" width="31%" alt="Console Tab" />
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/elements.png" width="31%" alt="Elements Tab" />
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/network.png" width="31%" alt="Network Tab" />
+  <img src="docs/assets/01-console-light.png" width="31%" alt="Console Tab" />
+  <img src="docs/assets/02-elements-light.png" width="31%" alt="Elements Tab" />
+  <img src="docs/assets/03-network-light.png" width="31%" alt="Network Tab" />
 </p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/storage.png" width="31%" alt="Storage Tab" />
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/system.png" width="31%" alt="System Tab" />
+  <img src="docs/assets/04-storage-light.png" width="31%" alt="Storage Tab" />
+  <img src="docs/assets/05-system-light.png" width="31%" alt="System Tab" />
 </p>
 
 ---
@@ -68,14 +68,14 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
 - 🌐 **Network Throttling Simulator**: Simulate `Slow 3G`, `Fast 3G`, or `Offline` connection modes directly on mobile devices with synthetic latency injection.
 - ⚡ **Cable-Free Mobile Inspection**: Debug directly on physical iOS / Android devices, mobile webviews, or mobile Safari/Chrome.
 - 🛡️ **Shadow DOM Style Isolation**: Rendered inside a Shadow DOM container (`<mobile-devtools-root>`), guaranteeing **zero CSS leaks** into your app's global styles and **zero style pollution** from Tailwind, Bootstrap, or global CSS resets.
-- 📋 **Console Tab**: Real-time capture of `console.log`, `info`, `warn`, `error`, and `debug` with live filter search, JSON tree preview, and unread error badges.
-- 🌐 **Network Tab**: Live interception of `fetch` and `XMLHttpRequest` calls with HTTP status indicators (`200 OK`, `500 Error`), latency timing, request/response headers, and JSON body previews.
-- 💾 **Storage Tab**: Real-time inspector and editor for `localStorage`, `sessionStorage`, and `document.cookie`.
+- 📋 **Console Tab**: Real-time capture of `console.log`, `info`, `warn`, `error`, and `debug` with live search, log sorting (`Newest`, `Oldest`, `Errors`, `Frequent`), JSON tree preview, and unread error badges.
+- 🌐 **Network Tab**: Live interception of `fetch`, `XMLHttpRequest` (XHR), native `WebSocket` connections, and `EventSource` (SSE) with HTTP status indicators, latency timing, request/response headers, JSON body previews, WebSocket SVG direction frames, and unified sort & status class filtering (`Newest`, `Oldest`, `Slowest`, `Fastest`, `2xx Success`, `3xx Redirect`, `4xx Client Error`, `5xx Server Error`, `1xx Info`, `Network Error`).
+- 💾 **Storage Tab**: Real-time inspector and editor for `localStorage`, `sessionStorage`, `document.cookie`, and `indexedDB` databases and object stores.
 - 💻 **System Info Tab**: Real-time diagnostic monitor for viewport dimensions, device pixel ratio (DPR), user agent string, memory limit, and screen orientation.
 - 🔌 **Pluggable Custom Tabs (`customTabs`)**: Easily extend DevTools by adding custom tabs with your own DOM rendering callbacks (`render(container)`).
 - 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
 - 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
-- 🧪 **Comprehensive Test Suite**: Tested with **65 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
+- 🧪 **Comprehensive Test Suite**: Tested with **106 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
 - 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, **Svelte 4/5**, and **Vanilla JS**.
 
 ---
@@ -98,8 +98,8 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
                            │   Native Shadow DOM Host  │
                            │   <mobile-devtools-root>  │
                            └─────────────┬─────────────┘
-                                    │
-            ┌───────────────────────┴───────────────────────┐
+                                         │
+            ┌────────────────────────────┴──────────────────┐
             │                                               │
 ┌───────────▼─────────────────┐   ┌─────────────────────────▼──────────────┐
 │      Core Interceptors      │   │               UI Engine                │
@@ -240,7 +240,7 @@ Import from `mobile-devtools/svelte`:
 
 ### 🍦 Vanilla JS / Legacy Apps
 
-Import directly from `mobile-devtools`:
+**Option A: npm Package Import**
 
 ```typescript
 import { createMobileDevTools } from 'mobile-devtools';
@@ -270,6 +270,21 @@ const devtools = createMobileDevTools({
 });
 ```
 
+**Option B: Direct CDN / UNPKG Script Tag (Zero Build Step)**
+
+```html
+<script type="module">
+  import { createMobileDevTools } from 'https://unpkg.com/mobile-devtools';
+
+  // Works out-of-the-box in any static HTML page or legacy app
+  createMobileDevTools({
+    title: 'My App Debugger',
+    position: 'bottom-right',
+    theme: { mode: 'dark' },
+  });
+</script>
+```
+
 ---
 
 ## ⚙️ Full Configuration & Props Reference
@@ -289,6 +304,7 @@ Below is the complete reference table for all configuration options supported by
 | `styles`                    | `DevToolsStyles`        | `undefined`                                               | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
 | `defaultOpen`               | `boolean`               | `false`                                                   | Set to `true` to open drawer automatically on mount                                                                                   |
 | `autoSnapBadge`             | `boolean`               | `false`                                                   | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
+| `shakeToToggle`             | `boolean`               | `true`                                                    | Enable physical device shake motion gesture to toggle DevTools drawer                                                                 |
 | `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                  | Theme mode                                                                                                                            |
 | `theme.accentColor`         | `string`                | `undefined`                                               | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
 | `theme.backgroundColor`     | `string`                | `undefined`                                               | Custom background color for drawer and badge                                                                                          |
@@ -330,9 +346,10 @@ mobile-devtools/
 ├── examples/
 │   ├── react/                  # React 19 test harness app (Port 3001)
 │   ├── vue/                    # Vue 3 test harness app (Port 3002)
-│   └── vanilla/                # Vanilla JS test harness app (Port 3003)
+│   ├── svelte/                 # Svelte 5 test harness app (Port 3003)
+│   └── vanilla/                # Vanilla JS test harness app (Port 3004)
 └── packages/
-    ├── mobile-devtools/        # Main unified published npm package (Core + UI + React/Vue/Vanilla Adapters)
+    ├── mobile-devtools/        # Main unified published npm package (Core + UI + React/Vue/Svelte/Vanilla Adapters)
     └── config/
         ├── eslint/             # Shared ESLint configuration (@mobile-devtools/eslint-config)
         └── typescript/         # Shared TypeScript configuration (@mobile-devtools/tsconfig)
@@ -341,6 +358,8 @@ mobile-devtools/
 ---
 
 ## 🛠️ Development Setup
+
+**Prerequisites**: Node.js `>= 24.0.0` (v24.4.1+ recommended), pnpm `9.15.0`
 
 To build and run the project locally:
 

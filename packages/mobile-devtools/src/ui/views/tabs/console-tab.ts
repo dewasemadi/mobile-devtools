@@ -1,4 +1,11 @@
-import { DevToolsStore, formatTimestamp, LOG_LEVELS } from '../../../core';
+import {
+  CONSOLE_SORT_OPTIONS,
+  ConsoleSortOption,
+  DevToolsStore,
+  FILTER_OPTIONS,
+  formatTimestamp,
+  LOG_LEVELS,
+} from '../../../core';
 import { renderJsonTree } from '../../components/json-tree';
 import { TRASH_ICON } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
@@ -9,7 +16,8 @@ export class ConsoleTabView {
   private listScrollContainer: HTMLElement | null = null;
   private clearBtn: HTMLButtonElement | null = null;
   private searchValue = '';
-  private levelFilter: string = 'all';
+  private levelFilter: string = FILTER_OPTIONS.ALL;
+  private sortOption: ConsoleSortOption = CONSOLE_SORT_OPTIONS.TIME_DESC;
   private savedScrollTop = 0;
   private isScrolledToBottom = true;
 
@@ -22,31 +30,26 @@ export class ConsoleTabView {
   public render(): HTMLElement {
     this.container.innerHTML = '';
 
-    // Toolbar
+    // Toolbar (2-Row Layout: Row 1 = Search + Clear, Row 2 = Level, Sort)
     const toolbar = document.createElement('div');
     toolbar.className = 'devtools-toolbar';
+    toolbar.style.display = 'flex';
+    toolbar.style.flexDirection = 'column';
+    toolbar.style.gap = '6px';
 
-    const levelSelect = document.createElement('select');
-    levelSelect.className = 'devtools-select';
-    levelSelect.style.width = '80px';
-    levelSelect.style.minWidth = '80px';
-    levelSelect.innerHTML = `
-      <option value="all">ALL</option>
-      <option value="${LOG_LEVELS.LOG}">LOG</option>
-      <option value="${LOG_LEVELS.WARN}">WARN</option>
-      <option value="${LOG_LEVELS.ERROR}">ERROR</option>
-    `;
-    levelSelect.value = this.levelFilter;
-    levelSelect.addEventListener('change', (e) => {
-      this.levelFilter = (e.target as HTMLSelectElement).value;
-      this.updateList();
-    });
+    const row1 = document.createElement('div');
+    row1.style.display = 'flex';
+    row1.style.alignItems = 'center';
+    row1.style.gap = '6px';
+    row1.style.width = '100%';
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.className = 'devtools-search-input';
     searchInput.placeholder = 'Filter console logs...';
     searchInput.value = this.searchValue;
+    searchInput.style.flex = '1';
+    searchInput.style.minWidth = '0';
     searchInput.addEventListener('input', (e) => {
       this.searchValue = (e.target as HTMLInputElement).value;
       this.updateList();
@@ -59,16 +62,64 @@ export class ConsoleTabView {
     this.clearBtn.addEventListener('click', () => {
       if (
         window.confirm(
-          'Are you sure you want to clear all console logs? This action cannot be undone.'
+          'Are you sure you want to clear all recorded console logs? This action cannot be undone.'
         )
       ) {
         this.store.clearLogs();
+        this.render();
       }
     });
 
-    toolbar.appendChild(levelSelect);
-    toolbar.appendChild(searchInput);
-    toolbar.appendChild(this.clearBtn);
+    row1.appendChild(searchInput);
+    row1.appendChild(this.clearBtn);
+
+    const row2 = document.createElement('div');
+    row2.style.display = 'flex';
+    row2.style.alignItems = 'center';
+    row2.style.gap = '6px';
+    row2.style.width = '100%';
+    row2.style.overflowX = 'auto';
+    setupScrollLockGuard(row2);
+
+    const levelSelect = document.createElement('select');
+    levelSelect.className = 'devtools-select';
+    levelSelect.style.flex = '1';
+    levelSelect.style.minWidth = '75px';
+    levelSelect.innerHTML = `
+      <option value="${FILTER_OPTIONS.ALL}">ALL</option>
+      <option value="${LOG_LEVELS.LOG}">LOG</option>
+      <option value="${LOG_LEVELS.INFO}">INFO</option>
+      <option value="${LOG_LEVELS.WARN}">WARN</option>
+      <option value="${LOG_LEVELS.ERROR}">ERROR</option>
+      <option value="${LOG_LEVELS.DEBUG}">DEBUG</option>
+    `;
+    levelSelect.value = this.levelFilter;
+    levelSelect.addEventListener('change', (e) => {
+      this.levelFilter = (e.target as HTMLSelectElement).value;
+      this.updateList();
+    });
+
+    const sortSelect = document.createElement('select');
+    sortSelect.className = 'devtools-select';
+    sortSelect.style.flex = '1';
+    sortSelect.style.minWidth = '85px';
+    sortSelect.innerHTML = `
+      <option value="${CONSOLE_SORT_OPTIONS.TIME_DESC}">Newest</option>
+      <option value="${CONSOLE_SORT_OPTIONS.TIME_ASC}">Oldest</option>
+      <option value="${CONSOLE_SORT_OPTIONS.LEVEL_DESC}">Errors</option>
+      <option value="${CONSOLE_SORT_OPTIONS.COUNT_DESC}">Frequent</option>
+    `;
+    sortSelect.value = this.sortOption;
+    sortSelect.addEventListener('change', (e) => {
+      this.sortOption = (e.target as HTMLSelectElement).value as ConsoleSortOption;
+      this.updateList();
+    });
+
+    row2.appendChild(levelSelect);
+    row2.appendChild(sortSelect);
+
+    toolbar.appendChild(row1);
+    toolbar.appendChild(row2);
 
     // Scrollable List Container
     this.listScrollContainer = document.createElement('div');
@@ -106,11 +157,37 @@ export class ConsoleTabView {
       const matchesSearch =
         !this.searchValue.trim() ||
         log.args.some((arg) => String(arg).toLowerCase().includes(this.searchValue.toLowerCase()));
-      const matchesLevel = this.levelFilter === 'all' || log.level === this.levelFilter;
+      const matchesLevel =
+        this.levelFilter === FILTER_OPTIONS.ALL || log.level === this.levelFilter;
       return matchesSearch && matchesLevel;
     });
 
-    if (filtered.length === 0) {
+    const levelPriority: Record<string, number> = {
+      [LOG_LEVELS.ERROR]: 4,
+      [LOG_LEVELS.WARN]: 3,
+      [LOG_LEVELS.INFO]: 2,
+      [LOG_LEVELS.LOG]: 1,
+      [LOG_LEVELS.DEBUG]: 0,
+    };
+
+    const sorted = [...filtered].sort((a, b) => {
+      if (this.sortOption === CONSOLE_SORT_OPTIONS.TIME_ASC) {
+        return a.timestamp - b.timestamp;
+      }
+      if (this.sortOption === CONSOLE_SORT_OPTIONS.LEVEL_DESC) {
+        const prioA = levelPriority[a.level] ?? 0;
+        const prioB = levelPriority[b.level] ?? 0;
+        if (prioA !== prioB) return prioB - prioA;
+        return b.timestamp - a.timestamp;
+      }
+      if (this.sortOption === CONSOLE_SORT_OPTIONS.COUNT_DESC) {
+        if ((b.count || 1) !== (a.count || 1)) return (b.count || 1) - (a.count || 1);
+        return b.timestamp - a.timestamp;
+      }
+      return b.timestamp - a.timestamp;
+    });
+
+    if (sorted.length === 0) {
       const empty = document.createElement('div');
       empty.style.textAlign = 'center';
       empty.style.padding = '32px';
@@ -121,7 +198,7 @@ export class ConsoleTabView {
       return;
     }
 
-    filtered.forEach((log) => {
+    sorted.forEach((log) => {
       const card = document.createElement('div');
       card.className = 'devtools-code-card';
 

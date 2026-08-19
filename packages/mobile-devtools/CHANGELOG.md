@@ -4,6 +4,27 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.4.0] - 2026-08-19
+
+### 📱 IndexedDB Inspector, Status Breakdown Filters, Automated Screenshots & Svelte Harness
+
+#### Added
+
+- **IndexedDB Database & Object Store Inspector**: Complete Storage Tab support for inspecting and editing IndexedDB databases, object stores, and records alongside LocalStorage, SessionStorage, and Cookies.
+- **Unified Network Status Breakdown & Class Filters**: Added HTTP status code class filters (`2xx Success`, `3xx Redirect`, `4xx Client Error`, `5xx Server Error`, `1xx Info`, `Network Error`) and unified sorting (`Newest`, `Oldest`, `Slowest`, `Fastest`) in the Network Tab.
+- **Automated Light Mode Mobile Screenshots**: Added Playwright automated screenshot generator script (`pnpm generate:screenshots`) capturing high-res Retina @3x iPhone 14/15 Pro Max Light Mode viewports with simulated iOS Status Bar and Mobile Safari Address Bar.
+- **Svelte 4/5 Monorepo Example App**: Added `examples/svelte` test harness app on Port `3003` to test Svelte integration end-to-end alongside React (`3001`), Vue (`3002`), and Vanilla (`3004`).
+- **Tailwind CSS ESLint & Prettier Integration**: Configured `eslint-plugin-tailwindcss` and `prettier-plugin-tailwindcss` flat configs across monorepo packages.
+
+#### Fixed & Improved
+
+- **Node & pnpm Requirements**: Standardized Node.js minimum requirement to `>= 24.0.0` (Node 24.4.1+ recommended) and pnpm `9.15.0`.
+- **`shakeToToggle` Documentation**: Updated configuration references in `README.md`, `packages/mobile-devtools/README.md`, and web portal landing page API table.
+- **Vite Cloudflare Compatibility**: Added environment variable flag (`NO_CLOUDFLARE=true`) to cleanly bypass Cloudflare plugin during local screenshot and dev automation runs.
+
+---
+
 ## [1.3.0] - 2026-08-17
 
 ### ⚡ Real-time SSE/WebSocket Interception & Shake-to-Toggle Motion Detection

@@ -12,8 +12,20 @@ describe('ConsoleTabView', () => {
   });
 
   it('should render toolbar and log entries', () => {
-    store.addLog({ id: '1', level: 'log', args: ['User logged in'], timestamp: Date.now(), count: 1 });
-    store.addLog({ id: '2', level: 'error', args: ['Database error'], timestamp: Date.now(), count: 1 });
+    store.addLog({
+      id: '1',
+      level: 'log',
+      args: ['User logged in'],
+      timestamp: Date.now(),
+      count: 1,
+    });
+    store.addLog({
+      id: '2',
+      level: 'error',
+      args: ['Database error'],
+      timestamp: Date.now(),
+      count: 1,
+    });
 
     const el = tabView.render();
     expect(el).toBeDefined();
@@ -21,8 +33,20 @@ describe('ConsoleTabView', () => {
   });
 
   it('should filter logs by level select dropdown', () => {
-    store.addLog({ id: '1', level: 'log', args: ['User logged in'], timestamp: Date.now(), count: 1 });
-    store.addLog({ id: '2', level: 'error', args: ['Database error'], timestamp: Date.now(), count: 1 });
+    store.addLog({
+      id: '1',
+      level: 'log',
+      args: ['User logged in'],
+      timestamp: Date.now(),
+      count: 1,
+    });
+    store.addLog({
+      id: '2',
+      level: 'error',
+      args: ['Database error'],
+      timestamp: Date.now(),
+      count: 1,
+    });
 
     const el = tabView.render();
     const select = el.querySelector('select.devtools-select') as HTMLSelectElement;
@@ -36,8 +60,20 @@ describe('ConsoleTabView', () => {
   });
 
   it('should filter logs by text search query', () => {
-    store.addLog({ id: '1', level: 'log', args: ['User logged in'], timestamp: Date.now(), count: 1 });
-    store.addLog({ id: '2', level: 'error', args: ['Database error'], timestamp: Date.now(), count: 1 });
+    store.addLog({
+      id: '1',
+      level: 'log',
+      args: ['User logged in'],
+      timestamp: Date.now(),
+      count: 1,
+    });
+    store.addLog({
+      id: '2',
+      level: 'error',
+      args: ['Database error'],
+      timestamp: Date.now(),
+      count: 1,
+    });
 
     const el = tabView.render();
     const searchInput = el.querySelector('input.devtools-search-input') as HTMLInputElement;
@@ -52,7 +88,13 @@ describe('ConsoleTabView', () => {
 
   it('should clear logs when clear button is clicked', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    store.addLog({ id: '1', level: 'warn', args: ['Warning message'], timestamp: Date.now(), count: 1 });
+    store.addLog({
+      id: '1',
+      level: 'warn',
+      args: ['Warning message'],
+      timestamp: Date.now(),
+      count: 1,
+    });
 
     const el = tabView.render();
     const clearBtn = el.querySelector('.devtools-btn-danger') as HTMLButtonElement;

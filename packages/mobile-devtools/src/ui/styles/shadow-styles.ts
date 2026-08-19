@@ -137,11 +137,14 @@ export const SHADOW_STYLES = `
   color: var(--json-key);
   font-weight: 600;
   font-family: var(--dev-font-mono);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .devtools-json-string {
   color: var(--json-string);
   font-family: var(--dev-font-mono);
+  word-break: break-all;
 }
 
 .devtools-json-number {

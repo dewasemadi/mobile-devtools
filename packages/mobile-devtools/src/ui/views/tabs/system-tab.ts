@@ -1,4 +1,5 @@
 import { copyToClipboard, DevToolsStore, isBrowser } from '../../../core';
+import { CHECK_ICON } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 export class SystemTabView {
@@ -11,29 +12,36 @@ export class SystemTabView {
 
   public render(): HTMLElement {
     this.container.innerHTML = '';
+    this.container.style.padding = '14px';
+    setupScrollLockGuard(this.container);
 
-    const listScroll = document.createElement('div');
-    listScroll.className = 'devtools-list-scroll';
-    listScroll.style.padding = '14px';
-    setupScrollLockGuard(listScroll);
+    if (!isBrowser) {
+      this.container.innerHTML =
+        '<div style="color:var(--dev-text-muted)">System info not available in SSR.</div>';
+      return this.container;
+    }
 
-    const isWin = isBrowser;
-    const ua = isWin ? navigator.userAgent : 'Server-side';
-    const screenWidth = isWin ? window.screen.width : 0;
-    const screenHeight = isWin ? window.screen.height : 0;
-    const innerWidth = isWin ? window.innerWidth : 0;
-    const innerHeight = isWin ? window.innerHeight : 0;
-    const dpr = isWin ? window.devicePixelRatio || 1 : 1;
-    const touchSupport = isWin ? 'ontouchstart' in window || navigator.maxTouchPoints > 0 : false;
-    const lang = isWin ? navigator.language : 'en-US';
-    const memory = isWin && (performance as any).memory ? `${Math.round((performance as any).memory.usedJSHeapSize / 1048576)} MB` : 'N/A';
+    const ua = navigator.userAgent;
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const innerWidth = window.innerWidth;
+    const innerHeight = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    const lang = navigator.language;
+    const touchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0 ? 'Yes' : 'No';
 
-    // Toolbar / Copy Header
+    const memInfo = (performance as any)?.memory;
+    const memory = memInfo
+      ? `${Math.round(memInfo.usedJSHeapSize / 1048576)}MB / ${Math.round(
+          memInfo.jsHeapSizeLimit / 1048576
+        )}MB`
+      : 'N/A';
+
     const topBar = document.createElement('div');
     topBar.style.display = 'flex';
     topBar.style.justifyContent = 'space-between';
     topBar.style.alignItems = 'center';
-    topBar.style.marginBottom = '12px';
+    topBar.style.marginBottom = '14px';
 
     const h3 = document.createElement('h3');
     h3.style.fontSize = '13px';
@@ -47,7 +55,9 @@ export class SystemTabView {
     copyBtn.addEventListener('click', async () => {
       const info = `User Agent: ${ua}\nScreen: ${screenWidth}x${screenHeight}\nViewport: ${innerWidth}x${innerHeight}\nDPR: ${dpr}\nTouch Support: ${touchSupport}\nLanguage: ${lang}\nMemory: ${memory}`;
       const ok = await copyToClipboard(info);
-      copyBtn.textContent = ok ? '✓ Copied' : 'Failed';
+      copyBtn.innerHTML = ok
+        ? `<span style="display:inline-flex;align-items:center;gap:4px">${CHECK_ICON} Copied</span>`
+        : 'Failed';
       setTimeout(() => {
         copyBtn.textContent = 'Copy Info';
       }, 2000);
@@ -94,11 +104,10 @@ export class SystemTabView {
       </tbody>
     `;
 
-    listScroll.appendChild(topBar);
-    listScroll.appendChild(uaBox);
-    listScroll.appendChild(table);
+    this.container.appendChild(topBar);
+    this.container.appendChild(uaBox);
+    this.container.appendChild(table);
 
-    this.container.appendChild(listScroll);
     return this.container;
   }
 }

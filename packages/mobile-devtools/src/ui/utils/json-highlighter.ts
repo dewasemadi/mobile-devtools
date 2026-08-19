@@ -14,20 +14,14 @@ export function highlightJsonSyntax(data: any): string {
       jsonStr = JSON.stringify(parsed, null, 2);
     } catch {
       // If plain text string, return escaped string
-      return data
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      return data.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
   } else {
     jsonStr = JSON.stringify(data, null, 2);
   }
 
   // Escape HTML entities
-  const escaped = jsonStr
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  const escaped = jsonStr.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // Regex replacement for syntax highlighting matching CSS variables
   return escaped.replace(

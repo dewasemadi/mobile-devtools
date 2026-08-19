@@ -1,5 +1,6 @@
 import {
   BUILTIN_TABS,
+  DEFAULT_CONFIG_DEFAULTS,
   DEVTOOLS_CLASSNAMES,
   DevToolsStore,
   DevToolsTabId,
@@ -113,8 +114,6 @@ export class DrawerView {
     this.originalDocOverflow = null;
     this.isBodyLocked = false;
   }
-
-
 
   private attachSwipeListeners(element: HTMLElement) {
     element.addEventListener('pointerdown', (e: PointerEvent) => {
@@ -243,7 +242,7 @@ export class DrawerView {
       iconHtml = LOGO_ICON;
     }
 
-    const pillTitle = config.title || 'Mobile DevTools';
+    const pillTitle = config.title || DEFAULT_CONFIG_DEFAULTS.TITLE;
     const errorPill =
       unread.errors > 0
         ? `<span class="devtools-pill-badge error">${formatCount(unread.errors)} Errors</span>`

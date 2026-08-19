@@ -33,7 +33,10 @@ export const MobileDevTools = defineComponent({
     enabled: { type: Boolean as PropType<boolean>, default: undefined },
     forceEnable: { type: Boolean as PropType<boolean>, default: undefined },
     title: { type: String as PropType<string>, default: undefined },
-    position: { type: [String, Object] as PropType<DevToolsConfig['position']>, default: undefined },
+    position: {
+      type: [String, Object] as PropType<DevToolsConfig['position']>,
+      default: undefined,
+    },
     theme: { type: Object as PropType<DevToolsConfig['theme']>, default: undefined },
     initialTab: { type: String as PropType<DevToolsConfig['initialTab']>, default: undefined },
     enabledTabs: { type: Array as PropType<DevToolsConfig['enabledTabs']>, default: undefined },

@@ -1,14 +1,15 @@
 import {
+  NetworkFrameType,
   NetworkRequestType,
   NetworkStatus,
   NetworkThrottlingProfile,
 } from '../constants';
 
-export type { NetworkRequestType, NetworkStatus, NetworkThrottlingProfile };
+export type { NetworkFrameType, NetworkRequestType, NetworkStatus, NetworkThrottlingProfile };
 
 export interface NetworkFrameMessage {
   id: string;
-  type: 'sent' | 'received';
+  type: NetworkFrameType;
   data: any;
   timestamp: number;
 }

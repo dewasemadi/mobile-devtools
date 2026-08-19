@@ -5,7 +5,10 @@ export class ShadowHostManager {
   private shadowRootNode: ShadowRoot | null = null;
   private containerElement: HTMLDivElement | null = null;
 
-  public mount(targetParent?: HTMLElement | null): { shadowRoot: ShadowRoot; container: HTMLDivElement } {
+  public mount(targetParent?: HTMLElement | null): {
+    shadowRoot: ShadowRoot;
+    container: HTMLDivElement;
+  } {
     if (isServer) {
       throw new Error('[DevTools] Cannot mount ShadowHost in non-DOM environment');
     }

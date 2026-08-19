@@ -8,11 +8,14 @@
 
 The Console Tab intercepts all JavaScript log output in real time.
 
+![Console Tab Inspector](assets/01-console-light.png)
+
 ### Capabilities:
 
-- **Log Level Filters**: Filter logs by `All`, `Logs`, `Info`, `Warnings`, and `Errors`.
-- **Search Query Filter**: Instant text search filtering across log payloads.
-- **Interactive JSON Tree**: Expandable object inspector (`<json-tree>`) for deep nested JS objects, arrays, functions, and primitive values.
+- **2-Row Mobile Toolbar Layout**: Optimized 2-row toolbar featuring a full-width search input (`Filter console logs...`) alongside action buttons and dropdowns.
+- **Log Level Filters**: Filter logs by `All`, `LOG`, `INFO`, `WARN`, `ERROR`, and `DEBUG`.
+- **Log Sorting**: Sort logs dynamically by `Newest`, `Oldest`, `Errors`, or `Frequent`.
+- **Interactive JSON Tree**: Expandable object inspector (`<json-tree>`) with SVG chevron toggle arrows for deep nested JS objects, arrays, functions, and primitive values.
 - **Unread Error Badge**: The floating badge automatically highlights error counts (`🔴 2`) and warning counts (`🟡 1`) when unread errors occur while the drawer is closed.
 - **Clear Logs**: 1-click clear log button to purge the current log buffer.
 
@@ -22,10 +25,15 @@ The Console Tab intercepts all JavaScript log output in real time.
 
 The Network Tab monitors all outgoing and incoming HTTP network traffic.
 
+![Network Tab Interceptor](assets/03-network-light.png)
+
 ### Capabilities:
 
-- **Interception Scope**: Automatically patches `window.fetch` and `XMLHttpRequest` (XHR).
-- **HTTP Status Badge**: Visual status pill (`200 OK` in green, `404 Not Found` in yellow, `500 Internal Server Error` in red).
+- **2-Row Mobile Toolbar Layout**: Row 1 contains a full-width search bar + Clear button; Row 2 holds scroll-guarded `Method`, `Sort / Status Breakdown`, and `Throttling` dropdowns.
+- **Interception Scope**: Automatically patches `window.fetch`, `XMLHttpRequest` (XHR), native `WebSocket`, and `EventSource` (Server-Sent Events / SSE).
+- **Unified Sort & HTTP Status Breakdown Filter**: Select from `Newest`, `Oldest`, `Slowest`, `Fastest`, `2xx Success`, `3xx Redirect`, `4xx Client Error`, `5xx Server Error`, `1xx Info`, or `Network Error`.
+- **WebSocket & SSE Frames**: Renders real-time message frames (sent and received messages) with SVG direction icons (`ARROW_UP_ICON` Sent, `ARROW_DOWN_ICON` Received), high-precision timestamps, and interactive JSON payload syntax tree structures.
+- **HTTP Status Badge**: Visual status pill (`200 OK` in green, `404 Not Found` in yellow, `500 Internal Server Error` in red, `101 Switching Protocols` for active WebSockets).
 - **Timing & Latency**: Exact request latency timing measured in milliseconds (`45 ms`).
 - **Headers & Payloads**: Full view of Request Headers, Response Headers, Query Parameters, Request Body, and Response Body.
 - **JSON Syntax Highlighter**: Formatted JSON response viewer.
@@ -40,6 +48,8 @@ The Network Tab monitors all outgoing and incoming HTTP network traffic.
 ## 🌳 3. DOM Elements Inspector (`Elements Tab`)
 
 The Elements Tab allows mobile developers to inspect HTML elements and CSS layouts directly on mobile screens without a desktop browser connected.
+
+![DOM Elements Inspector Tab](assets/02-elements-light.png)
 
 ### Capabilities:
 
@@ -60,10 +70,13 @@ The Elements Tab allows mobile developers to inspect HTML elements and CSS layou
 
 Inspect and edit client-side storage mechanisms.
 
+![Storage Tab Inspector](assets/04-storage-light.png)
+
 ### Capabilities:
 
-- **Storage Engines**: Full support for `localStorage`, `sessionStorage`, and `document.cookie`.
-- **Live Search**: Filter keys instantly by name.
+- **Storage Engines**: Full support for `localStorage`, `sessionStorage`, `document.cookie`, and `indexedDB` (with context-aware Database & Store selectors).
+- **2-Row Mobile Toolbar Layout**: Full-width search bar + Add & Clear action buttons.
+- **Live Search**: Filter keys instantly by name or value.
 - **Add / Edit / Delete**: Add new key-value pairs, edit existing values inline, or delete individual keys.
 - **Clear All**: 1-click button to purge all entries in selected storage engine.
 
@@ -72,6 +85,8 @@ Inspect and edit client-side storage mechanisms.
 ## 💻 5. System Diagnostics (`System Tab`)
 
 Real-time device and browser diagnostics monitor.
+
+![System Info Diagnostics Tab](assets/05-system-light.png)
 
 ### Metrics Monitored:
 

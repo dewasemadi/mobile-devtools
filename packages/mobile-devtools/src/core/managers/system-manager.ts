@@ -1,3 +1,4 @@
+import { SCREEN_ORIENTATIONS } from '../constants';
 import { SystemDiagnostics } from '../types/system';
 import { isBrowser, isServer } from '../utils/env';
 
@@ -12,7 +13,7 @@ export class SystemManager {
         screenResolution: '0x0',
         viewportSize: '0x0',
         devicePixelRatio: 1,
-        orientation: 'portrait',
+        orientation: SCREEN_ORIENTATIONS.PORTRAIT,
         online: true,
       };
     }
@@ -24,7 +25,10 @@ export class SystemManager {
     const screenRes = `${window.screen.width} x ${window.screen.height}`;
     const viewport = `${window.innerWidth} x ${window.innerHeight}`;
     const dpr = window.devicePixelRatio || 1;
-    const orientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+    const orientation =
+      window.innerWidth > window.innerHeight
+        ? SCREEN_ORIENTATIONS.LANDSCAPE
+        : SCREEN_ORIENTATIONS.PORTRAIT;
 
     const conn =
       (navigator as any).connection ||
@@ -34,7 +38,9 @@ export class SystemManager {
 
     let jsHeapLimit: string | undefined;
     let usedJsHeap: string | undefined;
-    const mem = (isBrowser && (window as any).memory) || (typeof performance !== 'undefined' && (performance as any).memory);
+    const mem =
+      (isBrowser && (window as any).memory) ||
+      (typeof performance !== 'undefined' && (performance as any).memory);
     if (mem) {
       jsHeapLimit = `${Math.round(mem.jsHeapSizeLimit / 1024 / 1024)} MB`;
       usedJsHeap = `${Math.round(mem.usedJSHeapSize / 1024 / 1024)} MB`;

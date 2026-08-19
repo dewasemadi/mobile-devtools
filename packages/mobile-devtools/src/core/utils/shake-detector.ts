@@ -53,10 +53,16 @@ export class ShakeDetector {
     // Check iOS 13+ permission API to ensure explicit permission request on first interaction if needed
     if (typeof DeviceMotionEventClass.requestPermission === 'function') {
       if (!this.gestureListenersBound) {
-        window.addEventListener('touchstart', this.handleGestureBound, { once: true, capture: true });
+        window.addEventListener('touchstart', this.handleGestureBound, {
+          once: true,
+          capture: true,
+        });
         window.addEventListener('touchend', this.handleGestureBound, { once: true, capture: true });
         window.addEventListener('click', this.handleGestureBound, { once: true, capture: true });
-        window.addEventListener('pointerup', this.handleGestureBound, { once: true, capture: true });
+        window.addEventListener('pointerup', this.handleGestureBound, {
+          once: true,
+          capture: true,
+        });
         this.gestureListenersBound = true;
       }
     }

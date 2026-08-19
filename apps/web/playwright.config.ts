@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { defineConfig, devices } from '@playwright/test';
 
 const baseURL = 'http://localhost:3000';

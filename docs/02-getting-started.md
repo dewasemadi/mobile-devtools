@@ -1,6 +1,6 @@
 # 02. Getting Started & Framework Integrations
 
-`mobile-devtools` provides first-class framework adapters for **React 18/19**, **Vue 3**, and **Vanilla JavaScript**.
+`mobile-devtools` provides first-class framework adapters for **React 18/19**, **Vue 3**, **Svelte 4/5**, and **Vanilla JavaScript**.
 
 ---
 
@@ -102,6 +102,42 @@ For programmatic control over DevTools in Vue:
 
   const { getEngine, getStore } = useMobileDevTools({
     title: 'Vue Hook Debugger',
+    position: 'bottom-right',
+  });
+</script>
+```
+
+---
+
+## 🧡 Svelte 4 / 5 Integration
+
+Import from `mobile-devtools/svelte`. Supports both the Svelte Action directive and the programmatic lifecycle hook.
+
+### Svelte Action Directive (`use:mobileDevTools`)
+
+The most common way to initialize DevTools in Svelte is by using the Action directive on a container element:
+
+```html
+<script lang="ts">
+  import { mobileDevTools } from 'mobile-devtools/svelte';
+</script>
+
+<!-- The action directive automatically manages the mount and cleanup lifecycle -->
+<div use:mobileDevTools={{ theme: { mode: 'dark' }, shakeToToggle: true }}>
+  <!-- Your main application goes here -->
+</div>
+```
+
+### Svelte Programmatic Hook (`useMobileDevTools`)
+
+For programmatic control over mounting and configuration:
+
+```html
+<script lang="ts">
+  import { useMobileDevTools } from 'mobile-devtools/svelte';
+
+  const { store, destroy } = useMobileDevTools({
+    title: 'Svelte Hook Debugger',
     position: 'bottom-right',
   });
 </script>

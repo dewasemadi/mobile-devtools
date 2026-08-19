@@ -12,9 +12,9 @@ import { Footer } from '@/widgets/footer/ui/footer';
 
 export const HomePage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-dev-bg-200 text-dev-text-main flex flex-col font-sans selection:bg-neutral-800 selection:text-white transition-colors duration-200">
+    <div className="bg-dev-bg-200 text-dev-text-main flex min-h-screen flex-col font-sans transition-colors duration-200 selection:bg-neutral-800 selection:text-white">
       <Navbar />
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8 space-y-16 sm:space-y-24">
+      <main className="mx-auto w-full max-w-6xl flex-1 space-y-16 px-4 py-8 sm:space-y-24">
         {/* Hero Section */}
         <HeroSection />
 

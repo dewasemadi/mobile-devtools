@@ -1,15 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  Terminal,
-  Globe,
-  Database,
-  Play,
-  AlertTriangle,
-  AlertCircle,
-  Zap,
-} from 'lucide-react';
+import { Terminal, Globe, Database, Play, AlertTriangle, AlertCircle, Zap } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 
 export const TestHarness: React.FC = () => {
@@ -173,32 +165,66 @@ export const TestHarness: React.FC = () => {
     console.log('📱 Simulated Device Shake Event Dispatched!');
   };
 
+  const seedIndexedDBDemo = () => {
+    if (typeof window === 'undefined' || !window.indexedDB) return;
+    const req = indexedDB.open('AppCacheDB', 1);
+    req.onupgradeneeded = (e: IDBVersionChangeEvent) => {
+      const db = (e.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains('users')) {
+        db.createObjectStore('users', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('settings')) {
+        db.createObjectStore('settings', { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = (e: Event) => {
+      const db = (e.target as IDBOpenDBRequest).result;
+      const tx = db.transaction(['users', 'settings'], 'readwrite');
+      const userStore = tx.objectStore('users');
+      userStore.put({ id: 'usr_101', name: 'John Doe', role: 'Developer', active: true });
+      userStore.put({ id: 'usr_102', name: 'Jane Smith', role: 'Designer', active: false });
+
+      const settingStore = tx.objectStore('settings');
+      settingStore.put({ key: 'theme', value: 'dark', updated: new Date().toISOString() });
+      settingStore.put({
+        key: 'notifications',
+        value: 'enabled',
+        updated: new Date().toISOString(),
+      });
+
+      tx.oncomplete = () => {
+        db.close();
+        console.log('🗄️ IndexedDB "AppCacheDB" seeded with sample stores & records!');
+      };
+    };
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
+    <div className="mx-auto max-w-4xl space-y-4">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-dev-text-bright tracking-tight">
+        <h2 className="text-dev-text-bright text-xl font-bold tracking-tight sm:text-2xl">
           Interactive Test Controls
         </h2>
-        <p className="text-sm text-dev-text-muted">
+        <p className="text-dev-text-muted text-sm">
           Click any action button below and tap the floating{' '}
           <strong className="text-dev-text-bright">DevTools</strong> badge in the corner to inspect
           captured data!
         </p>
       </div>
 
-      <div className="bg-dev-bg-100 border border-dev-border rounded-2xl p-5 space-y-4">
+      <div className="border-dev-border bg-dev-bg-100 space-y-4 rounded-2xl border p-5">
         {/* Console Interceptor Card */}
-        <div className="bg-dev-bg-300/80 border border-dev-border rounded-xl p-4 space-y-3">
+        <div className="border-dev-border bg-dev-bg-300/80 space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-            <h3 className="text-sm font-bold text-dev-text-bright">1. Console Interceptor Test</h3>
+            <Terminal className="size-4 text-emerald-500 dark:text-emerald-400" />
+            <h3 className="text-dev-text-bright text-sm font-bold">1. Console Interceptor Test</h3>
           </div>
-          <p className="text-xs text-dev-text-muted">
+          <p className="text-dev-text-muted text-xs">
             Trigger console entries to test badge counter & stack trace formatting.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={triggerConsoleLog}>
-              <Play className="w-3.5 h-3.5 text-dev-text-muted" />
+              <Play className="text-dev-text-muted size-3.5" />
               <span>console.log()</span>
             </Button>
             <Button
@@ -207,7 +233,7 @@ export const TestHarness: React.FC = () => {
               className="text-amber-600 dark:text-amber-400"
               onClick={triggerConsoleWarn}
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <AlertTriangle className="size-3.5 text-amber-600 dark:text-amber-400" />
               <span>console.warn()</span>
             </Button>
             <Button
@@ -216,26 +242,26 @@ export const TestHarness: React.FC = () => {
               className="text-rose-600 dark:text-rose-400"
               onClick={triggerConsoleError}
             >
-              <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+              <AlertCircle className="size-3.5 text-rose-600 dark:text-rose-400" />
               <span>console.error()</span>
             </Button>
           </div>
         </div>
 
         {/* Network Test Card */}
-        <div className="bg-dev-bg-300/80 border border-dev-border rounded-xl p-4 space-y-3">
+        <div className="border-dev-border bg-dev-bg-300/80 space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-            <h3 className="text-sm font-bold text-dev-text-bright">
+            <Globe className="size-4 text-sky-500 dark:text-sky-400" />
+            <h3 className="text-dev-text-bright text-sm font-bold">
               2. Network (Fetch & XHR) Test
             </h3>
           </div>
-          <p className="text-xs text-dev-text-muted">
+          <p className="text-dev-text-muted text-xs">
             Trigger real HTTP requests to test timing, JSON body, & Copy cURL.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={triggerFetchSuccess}>
-              <Play className="w-3.5 h-3.5 text-dev-text-muted" />
+              <Play className="text-dev-text-muted size-3.5" />
               <span>GET /users/1 (200)</span>
             </Button>
             <Button
@@ -244,7 +270,7 @@ export const TestHarness: React.FC = () => {
               className="text-amber-600 dark:text-amber-400"
               onClick={triggerFetch404}
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <AlertTriangle className="size-3.5 text-amber-600 dark:text-amber-400" />
               <span>PUT /posts/999999 (404)</span>
             </Button>
             <Button
@@ -253,19 +279,19 @@ export const TestHarness: React.FC = () => {
               className="text-rose-600 dark:text-rose-400"
               onClick={triggerFetchError}
             >
-              <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+              <AlertCircle className="size-3.5 text-rose-600 dark:text-rose-400" />
               <span>POST /posts (500 Danger)</span>
             </Button>
           </div>
         </div>
 
         {/* Storage Inspector Card */}
-        <div className="bg-dev-bg-300/80 border border-dev-border rounded-xl p-4 space-y-3">
+        <div className="border-dev-border bg-dev-bg-300/80 space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-2">
-            <Database className="w-4 h-4 text-purple-500 dark:text-purple-400" />
-            <h3 className="text-sm font-bold text-dev-text-bright">3. Storage Inspector Test</h3>
+            <Database className="size-4 text-purple-500 dark:text-purple-400" />
+            <h3 className="text-dev-text-bright text-sm font-bold">3. Storage Inspector Test</h3>
           </div>
-          <p className="text-xs text-dev-text-muted">
+          <p className="text-dev-text-muted text-xs">
             Mutate localStorage, sessionStorage, and document.cookie to test the Storage Inspector
             tab.
           </p>
@@ -279,18 +305,21 @@ export const TestHarness: React.FC = () => {
             <Button size="sm" variant="secondary" onClick={setCookieDemo}>
               <span>Set Cookie</span>
             </Button>
+            <Button size="sm" variant="secondary" onClick={seedIndexedDBDemo}>
+              <span>Seed IndexedDB</span>
+            </Button>
           </div>
         </div>
 
         {/* WebSocket, SSE & Motion Test Card */}
-        <div className="bg-dev-bg-300/80 border border-dev-border rounded-xl p-4 space-y-3">
+        <div className="border-dev-border bg-dev-bg-300/80 space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-            <h3 className="text-sm font-bold text-dev-text-bright">
+            <Zap className="size-4 text-amber-500 dark:text-amber-400" />
+            <h3 className="text-dev-text-bright text-sm font-bold">
               4. WebSocket, SSE & Shake Motion Test
             </h3>
           </div>
-          <p className="text-xs text-dev-text-muted">
+          <p className="text-dev-text-muted text-xs">
             Simulate real-time WebSocket frames, EventSource streams, and device shake gesture.
           </p>
           <div className="flex flex-wrap gap-2">

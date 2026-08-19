@@ -1,3 +1,5 @@
+import { MASK_PLACEHOLDER } from '../constants';
+
 /**
  * Recursively masks sensitive key values (e.g. passwords, auth tokens) in objects or primitive strings.
  * @param value Target payload or object.
@@ -5,11 +7,7 @@
  * @param maskKeys Array of key substrings to mask (case-insensitive).
  * @returns Masked object payload or string "****** (Masked)".
  */
-export function maskSensitiveValue(
-  value: any,
-  keyName = '',
-  maskKeys: string[] = []
-): any {
+export function maskSensitiveValue(value: any, keyName = '', maskKeys: string[] = []): any {
   if (value === null || value === undefined) return value;
   if (!maskKeys || maskKeys.length === 0) return value;
 
@@ -18,7 +16,7 @@ export function maskSensitiveValue(
   if (keyName) {
     const keyLower = keyName.toLowerCase();
     if (keysLower.some((k) => keyLower.includes(k))) {
-      return '****** (Masked)';
+      return MASK_PLACEHOLDER;
     }
   }
 
@@ -34,7 +32,7 @@ export function maskSensitiveValue(
     for (const k of Object.keys(value)) {
       const kLower = k.toLowerCase();
       if (keysLower.some((maskKey) => kLower.includes(maskKey))) {
-        copy[k] = '****** (Masked)';
+        copy[k] = MASK_PLACEHOLDER;
       } else {
         copy[k] = maskSensitiveValue(value[k], k, maskKeys);
       }

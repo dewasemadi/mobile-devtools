@@ -1,17 +1,26 @@
 import {
   copyToClipboard,
   DevToolsStore,
+  FILTER_OPTIONS,
   formatCount,
   formatDuration,
   formatTimestamp,
   generateCurlCommand,
   generateFullRequestSummary,
   HTTP_METHODS,
+  NETWORK_DETAIL_TABS,
+  NETWORK_FRAME_TYPES,
+  NETWORK_SORT_OPTIONS,
   NETWORK_THROTTLING,
+  NETWORK_TYPES,
+  NETWORK_VIEW_MODES,
+  NetworkDetailTab,
   NetworkRequestEntry,
+  NetworkSortOption,
+  NetworkViewMode,
 } from '../../../core';
 import { renderJsonTree } from '../../components/json-tree';
-import { BACK_ICON, TRASH_ICON } from '../../icons';
+import { ARROW_DOWN_ICON, ARROW_UP_ICON, BACK_ICON, CHECK_ICON, TRASH_ICON } from '../../icons';
 import { highlightJsonSyntax } from '../../utils/json-highlighter';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
@@ -21,11 +30,12 @@ export class NetworkTabView {
   private listScrollContainer: HTMLElement | null = null;
   private clearBtn: HTMLButtonElement | null = null;
   private searchValue = '';
-  private methodFilter = 'ALL';
+  private methodFilter: string = FILTER_OPTIONS.ALL_UPPER;
+  private sortOption: NetworkSortOption = NETWORK_SORT_OPTIONS.TIME_DESC;
   private selectedReq: NetworkRequestEntry | null = null;
-  private activeDetailTab: 'response' | 'payload' | 'headers' | 'frames' = 'response';
-  private responseViewMode: 'parsed' | 'raw' = 'parsed';
-  private payloadViewMode: 'parsed' | 'raw' = 'parsed';
+  private activeDetailTab: NetworkDetailTab = NETWORK_DETAIL_TABS.RESPONSE;
+  private responseViewMode: NetworkViewMode = NETWORK_VIEW_MODES.PARSED;
+  private payloadViewMode: NetworkViewMode = NETWORK_VIEW_MODES.PARSED;
   private detailScrollTop = 0;
   private detailScrollLeft = 0;
   private isDetailScrolledToBottom = true;
@@ -49,34 +59,26 @@ export class NetworkTabView {
       return this.renderDetailModal(freshReq);
     }
 
-    // Toolbar
+    // Toolbar (2-Row Layout: Row 1 = Search + Clear, Row 2 = Method, Sort, Throttling)
     const toolbar = document.createElement('div');
     toolbar.className = 'devtools-toolbar';
+    toolbar.style.display = 'flex';
+    toolbar.style.flexDirection = 'column';
+    toolbar.style.gap = '6px';
 
-    const methodSelect = document.createElement('select');
-    methodSelect.className = 'devtools-select';
-    methodSelect.style.width = '80px';
-    methodSelect.style.minWidth = '80px';
-    methodSelect.innerHTML = `
-      <option value="ALL">ALL</option>
-      <option value="${HTTP_METHODS.GET}">GET</option>
-      <option value="${HTTP_METHODS.POST}">POST</option>
-      <option value="${HTTP_METHODS.PUT}">PUT</option>
-      <option value="${HTTP_METHODS.DELETE}">DELETE</option>
-      <option value="WS">WS</option>
-      <option value="SSE">SSE</option>
-    `;
-    methodSelect.value = this.methodFilter;
-    methodSelect.addEventListener('change', (e) => {
-      this.methodFilter = (e.target as HTMLSelectElement).value;
-      this.updateList();
-    });
+    const row1 = document.createElement('div');
+    row1.style.display = 'flex';
+    row1.style.alignItems = 'center';
+    row1.style.gap = '6px';
+    row1.style.width = '100%';
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.className = 'devtools-search-input';
     searchInput.placeholder = 'Filter URL or Status...';
     searchInput.value = this.searchValue;
+    searchInput.style.flex = '1';
+    searchInput.style.minWidth = '0';
     searchInput.addEventListener('input', (e) => {
       this.searchValue = (e.target as HTMLInputElement).value;
       this.updateList();
@@ -98,10 +100,62 @@ export class NetworkTabView {
       }
     });
 
+    row1.appendChild(searchInput);
+    row1.appendChild(this.clearBtn);
+
+    const row2 = document.createElement('div');
+    row2.style.display = 'flex';
+    row2.style.alignItems = 'center';
+    row2.style.gap = '6px';
+    row2.style.width = '100%';
+    row2.style.overflowX = 'auto';
+    setupScrollLockGuard(row2);
+
+    const methodSelect = document.createElement('select');
+    methodSelect.className = 'devtools-select';
+    methodSelect.style.flex = '1';
+    methodSelect.style.minWidth = '70px';
+    methodSelect.innerHTML = `
+      <option value="ALL">ALL</option>
+      <option value="${HTTP_METHODS.GET}">GET</option>
+      <option value="${HTTP_METHODS.POST}">POST</option>
+      <option value="${HTTP_METHODS.PUT}">PUT</option>
+      <option value="${HTTP_METHODS.DELETE}">DELETE</option>
+      <option value="WS">WS</option>
+      <option value="SSE">SSE</option>
+    `;
+    methodSelect.value = this.methodFilter;
+    methodSelect.addEventListener('change', (e) => {
+      this.methodFilter = (e.target as HTMLSelectElement).value;
+      this.updateList();
+    });
+
+    const sortSelect = document.createElement('select');
+    sortSelect.className = 'devtools-select';
+    sortSelect.style.flex = '1';
+    sortSelect.style.minWidth = '85px';
+    sortSelect.innerHTML = `
+      <option value="${NETWORK_SORT_OPTIONS.TIME_DESC}">Newest</option>
+      <option value="${NETWORK_SORT_OPTIONS.TIME_ASC}">Oldest</option>
+      <option value="${NETWORK_SORT_OPTIONS.DURATION_DESC}">Slowest</option>
+      <option value="${NETWORK_SORT_OPTIONS.DURATION_ASC}">Fastest</option>
+      <option value="${NETWORK_SORT_OPTIONS.STATUS_2XX}">2xx Success</option>
+      <option value="${NETWORK_SORT_OPTIONS.STATUS_3XX}">3xx Redirect</option>
+      <option value="${NETWORK_SORT_OPTIONS.STATUS_4XX}">4xx Client Error</option>
+      <option value="${NETWORK_SORT_OPTIONS.STATUS_5XX}">5xx Server Error</option>
+      <option value="${NETWORK_SORT_OPTIONS.STATUS_1XX}">1xx Info</option>
+      <option value="${NETWORK_SORT_OPTIONS.STATUS_ERR}">Network Error</option>
+    `;
+    sortSelect.value = this.sortOption;
+    sortSelect.addEventListener('change', (e) => {
+      this.sortOption = (e.target as HTMLSelectElement).value as NetworkSortOption;
+      this.updateList();
+    });
+
     const throttlingSelect = document.createElement('select');
     throttlingSelect.className = 'devtools-select';
-    throttlingSelect.style.width = '115px';
-    throttlingSelect.style.minWidth = '115px';
+    throttlingSelect.style.flex = '1';
+    throttlingSelect.style.minWidth = '105px';
     throttlingSelect.title = 'Simulate Network Speed & Offline Mode';
     throttlingSelect.innerHTML = `
       <option value="${NETWORK_THROTTLING.ONLINE}">🌐 Online</option>
@@ -115,10 +169,12 @@ export class NetworkTabView {
       this.store.setNetworkThrottling(val);
     });
 
-    toolbar.appendChild(methodSelect);
-    toolbar.appendChild(throttlingSelect);
-    toolbar.appendChild(searchInput);
-    toolbar.appendChild(this.clearBtn);
+    row2.appendChild(methodSelect);
+    row2.appendChild(sortSelect);
+    row2.appendChild(throttlingSelect);
+
+    toolbar.appendChild(row1);
+    toolbar.appendChild(row2);
 
     // Scrollable List Container
     this.listScrollContainer = document.createElement('div');
@@ -154,12 +210,46 @@ export class NetworkTabView {
         String(req.status).includes(this.searchValue);
 
       const matchesMethod =
-        this.methodFilter === 'ALL' || req.method.toUpperCase() === this.methodFilter.toUpperCase();
+        this.methodFilter === FILTER_OPTIONS.ALL_UPPER ||
+        req.method.toUpperCase() === this.methodFilter.toUpperCase();
 
-      return matchesSearch && matchesMethod;
+      const matchesStatus = (() => {
+        if (this.sortOption === NETWORK_SORT_OPTIONS.STATUS_2XX)
+          return req.status >= 200 && req.status < 300;
+        if (this.sortOption === NETWORK_SORT_OPTIONS.STATUS_3XX)
+          return req.status >= 300 && req.status < 400;
+        if (this.sortOption === NETWORK_SORT_OPTIONS.STATUS_4XX)
+          return req.status >= 400 && req.status < 500;
+        if (this.sortOption === NETWORK_SORT_OPTIONS.STATUS_5XX)
+          return req.status >= 500 && req.status < 600;
+        if (this.sortOption === NETWORK_SORT_OPTIONS.STATUS_1XX)
+          return req.status >= 100 && req.status < 200;
+        if (this.sortOption === NETWORK_SORT_OPTIONS.STATUS_ERR)
+          return req.status === 0 || req.errorState === 'error';
+        return true;
+      })();
+
+      return matchesSearch && matchesMethod && matchesStatus;
     });
 
-    if (filtered.length === 0) {
+    const sorted = [...filtered].sort((a, b) => {
+      if (this.sortOption === NETWORK_SORT_OPTIONS.TIME_ASC) {
+        return a.startTime - b.startTime;
+      }
+      if (this.sortOption === NETWORK_SORT_OPTIONS.DURATION_DESC) {
+        const durA = (a.endTime || Date.now()) - a.startTime;
+        const durB = (b.endTime || Date.now()) - b.startTime;
+        return durB - durA;
+      }
+      if (this.sortOption === NETWORK_SORT_OPTIONS.DURATION_ASC) {
+        const durA = (a.endTime || Date.now()) - a.startTime;
+        const durB = (b.endTime || Date.now()) - b.startTime;
+        return durA - durB;
+      }
+      return b.startTime - a.startTime;
+    });
+
+    if (sorted.length === 0) {
       const empty = document.createElement('div');
       empty.style.textAlign = 'center';
       empty.style.padding = '32px';
@@ -170,7 +260,7 @@ export class NetworkTabView {
       return;
     }
 
-    filtered.forEach((req) => {
+    sorted.forEach((req) => {
       const isError = req.status >= 400 || req.errorState === 'error';
       const isPending = req.status === 0 && !req.errorState;
 
@@ -315,7 +405,9 @@ export class NetworkTabView {
     copyCurlBtn.addEventListener('click', async () => {
       const curl = generateCurlCommand(req);
       const ok = await copyToClipboard(curl);
-      copyCurlBtn.textContent = ok ? '✓ Copied' : 'Failed';
+      copyCurlBtn.innerHTML = ok
+        ? `<span style="display:inline-flex;align-items:center;gap:4px">${CHECK_ICON} Copied</span>`
+        : 'Failed';
       setTimeout(() => {
         copyCurlBtn.textContent = 'cURL';
       }, 2000);
@@ -327,7 +419,9 @@ export class NetworkTabView {
     copyFullReqBtn.addEventListener('click', async () => {
       const text = generateFullRequestSummary(req);
       const ok = await copyToClipboard(text);
-      copyFullReqBtn.textContent = ok ? '✓ Copied' : 'Failed';
+      copyFullReqBtn.innerHTML = ok
+        ? `<span style="display:inline-flex;align-items:center;gap:4px">${CHECK_ICON} Copied</span>`
+        : 'Failed';
       setTimeout(() => {
         copyFullReqBtn.textContent = 'Copy Request';
       }, 2000);
@@ -356,6 +450,16 @@ export class NetworkTabView {
     `;
 
     // Tabs Bar (Response / Payload / Headers) + Parsed/Raw inline
+    const isWsOrSse =
+      req.type === NETWORK_TYPES.WEBSOCKET ||
+      req.type === NETWORK_TYPES.EVENTSOURCE ||
+      req.method === HTTP_METHODS.WS ||
+      req.method === HTTP_METHODS.SSE;
+
+    if (!isWsOrSse && this.activeDetailTab === NETWORK_DETAIL_TABS.FRAMES) {
+      this.activeDetailTab = NETWORK_DETAIL_TABS.RESPONSE;
+    }
+
     const prevSubTabsScrollLeft = this.subTabsScrollLeft;
     const tabsBar = document.createElement('div');
     tabsBar.className = 'devtools-tabs-bar';
@@ -370,66 +474,75 @@ export class NetworkTabView {
     });
 
     const respBtn = document.createElement('button');
-    respBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'response' ? 'active' : ''}`;
+    respBtn.className = `devtools-tab-btn ${this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE ? 'active' : ''}`;
     respBtn.textContent = 'Response';
     respBtn.addEventListener('click', () => {
-      this.activeDetailTab = 'response';
+      this.activeDetailTab = NETWORK_DETAIL_TABS.RESPONSE;
       this.render();
     });
 
     const payloadBtn = document.createElement('button');
-    payloadBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'payload' ? 'active' : ''}`;
+    payloadBtn.className = `devtools-tab-btn ${this.activeDetailTab === NETWORK_DETAIL_TABS.PAYLOAD ? 'active' : ''}`;
     payloadBtn.textContent = 'Payload';
     payloadBtn.addEventListener('click', () => {
-      this.activeDetailTab = 'payload';
+      this.activeDetailTab = NETWORK_DETAIL_TABS.PAYLOAD;
       this.render();
     });
 
     const headersBtn = document.createElement('button');
-    headersBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'headers' ? 'active' : ''}`;
+    headersBtn.className = `devtools-tab-btn ${this.activeDetailTab === NETWORK_DETAIL_TABS.HEADERS ? 'active' : ''}`;
     headersBtn.textContent = 'Headers';
     headersBtn.addEventListener('click', () => {
-      this.activeDetailTab = 'headers';
-      this.render();
-    });
-
-    const framesBtn = document.createElement('button');
-    framesBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'frames' ? 'active' : ''}`;
-    framesBtn.textContent = `Frames (${formatCount(req.frames?.length || 0)})`;
-    framesBtn.addEventListener('click', () => {
-      this.activeDetailTab = 'frames';
+      this.activeDetailTab = NETWORK_DETAIL_TABS.HEADERS;
       this.render();
     });
 
     tabsBar.appendChild(respBtn);
     tabsBar.appendChild(payloadBtn);
     tabsBar.appendChild(headersBtn);
-    tabsBar.appendChild(framesBtn);
+
+    if (isWsOrSse) {
+      const framesBtn = document.createElement('button');
+      framesBtn.className = `devtools-tab-btn ${this.activeDetailTab === NETWORK_DETAIL_TABS.FRAMES ? 'active' : ''}`;
+      framesBtn.textContent = `Frames (${formatCount(req.frames?.length || 0)})`;
+      framesBtn.addEventListener('click', () => {
+        this.activeDetailTab = NETWORK_DETAIL_TABS.FRAMES;
+        this.render();
+      });
+      tabsBar.appendChild(framesBtn);
+    }
 
     // Left-aligned Parsed / Raw segmented control & Copy Request button inline
-    if (this.activeDetailTab === 'response' || this.activeDetailTab === 'payload') {
+    if (
+      this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE ||
+      this.activeDetailTab === NETWORK_DETAIL_TABS.PAYLOAD
+    ) {
       const currentMode =
-        this.activeDetailTab === 'response' ? this.responseViewMode : this.payloadViewMode;
+        this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE
+          ? this.responseViewMode
+          : this.payloadViewMode;
 
       const segmentedControl = document.createElement('div');
       segmentedControl.className = 'devtools-segmented-control';
       segmentedControl.style.marginLeft = 'auto';
 
       const parsedBtn = document.createElement('button');
-      parsedBtn.className = `devtools-segmented-btn ${currentMode === 'parsed' ? 'active' : ''}`;
+      parsedBtn.className = `devtools-segmented-btn ${currentMode === NETWORK_VIEW_MODES.PARSED ? 'active' : ''}`;
       parsedBtn.textContent = 'Parsed';
       parsedBtn.addEventListener('click', () => {
-        if (this.activeDetailTab === 'response') this.responseViewMode = 'parsed';
-        else this.payloadViewMode = 'parsed';
+        if (this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE)
+          this.responseViewMode = NETWORK_VIEW_MODES.PARSED;
+        else this.payloadViewMode = NETWORK_VIEW_MODES.PARSED;
         this.render();
       });
 
       const rawBtn = document.createElement('button');
-      rawBtn.className = `devtools-segmented-btn ${currentMode === 'raw' ? 'active' : ''}`;
+      rawBtn.className = `devtools-segmented-btn ${currentMode === NETWORK_VIEW_MODES.RAW ? 'active' : ''}`;
       rawBtn.textContent = 'Raw';
       rawBtn.addEventListener('click', () => {
-        if (this.activeDetailTab === 'response') this.responseViewMode = 'raw';
-        else this.payloadViewMode = 'raw';
+        if (this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE)
+          this.responseViewMode = NETWORK_VIEW_MODES.RAW;
+        else this.payloadViewMode = NETWORK_VIEW_MODES.RAW;
         this.render();
       });
 
@@ -459,11 +572,11 @@ export class NetworkTabView {
       this.detailScrollTop = bodyScroll.scrollTop;
     });
 
-    if (this.activeDetailTab === 'response') {
+    if (this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE) {
       if (!req.responseBody) {
         bodyScroll.innerHTML =
           '<div style="color:var(--dev-text-muted)">No response body available.</div>';
-      } else if (this.responseViewMode === 'parsed') {
+      } else if (this.responseViewMode === NETWORK_VIEW_MODES.PARSED) {
         bodyScroll.appendChild(renderJsonTree(req.responseBody));
       } else {
         const rawPre = document.createElement('pre');
@@ -476,11 +589,11 @@ export class NetworkTabView {
         rawPre.innerHTML = highlightJsonSyntax(req.responseBody);
         bodyScroll.appendChild(rawPre);
       }
-    } else if (this.activeDetailTab === 'payload') {
+    } else if (this.activeDetailTab === NETWORK_DETAIL_TABS.PAYLOAD) {
       if (!req.requestBody) {
         bodyScroll.innerHTML =
           '<div style="color:var(--dev-text-muted)">No request body payload.</div>';
-      } else if (this.payloadViewMode === 'parsed') {
+      } else if (this.payloadViewMode === NETWORK_VIEW_MODES.PARSED) {
         bodyScroll.appendChild(renderJsonTree(req.requestBody));
       } else {
         const rawPre = document.createElement('pre');
@@ -493,7 +606,7 @@ export class NetworkTabView {
         rawPre.innerHTML = highlightJsonSyntax(req.requestBody);
         bodyScroll.appendChild(rawPre);
       }
-    } else if (this.activeDetailTab === 'headers') {
+    } else if (this.activeDetailTab === NETWORK_DETAIL_TABS.HEADERS) {
       const headersWrap = document.createElement('div');
 
       const reqH4 = document.createElement('h4');
@@ -540,7 +653,7 @@ export class NetworkTabView {
       headersWrap.appendChild(resH4);
       headersWrap.appendChild(resTable);
       bodyScroll.appendChild(headersWrap);
-    } else if (this.activeDetailTab === 'frames') {
+    } else if (this.activeDetailTab === NETWORK_DETAIL_TABS.FRAMES) {
       const frames = req.frames || [];
       if (frames.length === 0) {
         bodyScroll.innerHTML =
@@ -571,14 +684,14 @@ export class NetworkTabView {
           badge.style.borderRadius = '4px';
           badge.style.fontSize = '10px';
           badge.style.fontWeight = '700';
-          if (frame.type === 'sent') {
+          if (frame.type === NETWORK_FRAME_TYPES.SENT) {
             badge.style.background = 'rgba(16, 185, 129, 0.15)';
             badge.style.color = 'var(--dev-success)';
-            badge.textContent = '⬆ Sent';
+            badge.innerHTML = `<span style="display:inline-flex;align-items:center;gap:3px">${ARROW_UP_ICON} Sent</span>`;
           } else {
             badge.style.background = 'rgba(59, 130, 246, 0.15)';
             badge.style.color = 'var(--dev-accent)';
-            badge.textContent = '⬇ Received';
+            badge.innerHTML = `<span style="display:inline-flex;align-items:center;gap:3px">${ARROW_DOWN_ICON} Received</span>`;
           }
 
           const time = document.createElement('span');

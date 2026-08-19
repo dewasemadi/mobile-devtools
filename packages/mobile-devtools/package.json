@@ -1,6 +1,6 @@
 {
   "name": "mobile-devtools",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications",
   "license": "MIT",
   "type": "module",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/dewasemadi/mobile-devtools.git"
   },
-  "homepage": "https://github.com/dewasemadi/mobile-devtools#readme",
+  "homepage": "https://mobile-devtools.dewasemadi3.workers.dev",
   "bugs": {
     "url": "https://github.com/dewasemadi/mobile-devtools/issues"
   },
@@ -17,6 +17,8 @@
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
+  "unpkg": "./dist/index.js",
+  "jsdelivr": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -42,7 +44,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "docs"
   ],
   "keywords": [
     "mobile",
@@ -68,7 +71,7 @@
     "vconsole"
   ],
   "scripts": {
-    "prebuild": "cp ../../README.md ./README.md",
+    "prebuild": "cp ../../README.md ./README.md && mkdir -p ./docs/assets && cp -r ../../docs/assets/* ./docs/assets/",
     "check-types": "tsc --noEmit",
     "build": "vite build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",

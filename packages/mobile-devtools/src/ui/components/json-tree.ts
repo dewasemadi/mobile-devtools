@@ -1,4 +1,5 @@
 import { formatCount } from '../../core';
+import { CHEVRON_DOWN_ICON, CHEVRON_RIGHT_ICON } from '../icons';
 
 export function renderJsonTree(data: any, indentLevel = 0): HTMLElement {
   const container = document.createElement('div');
@@ -48,8 +49,10 @@ export function renderJsonTree(data: any, indentLevel = 0): HTMLElement {
     toggle.className = 'devtools-json-toggle';
 
     const arrow = document.createElement('span');
-    arrow.textContent = '▼ ';
-    arrow.style.fontSize = '10px';
+    arrow.style.display = 'inline-flex';
+    arrow.style.alignItems = 'center';
+    arrow.style.marginRight = '4px';
+    arrow.innerHTML = CHEVRON_DOWN_ICON;
 
     const label = document.createElement('span');
     label.className = 'devtools-json-key';
@@ -66,7 +69,7 @@ export function renderJsonTree(data: any, indentLevel = 0): HTMLElement {
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
       isOpen = !isOpen;
-      arrow.textContent = isOpen ? '▼ ' : '▶ ';
+      arrow.innerHTML = isOpen ? CHEVRON_DOWN_ICON : CHEVRON_RIGHT_ICON;
       childrenContainer.style.display = isOpen ? 'block' : 'none';
     });
 
@@ -79,6 +82,8 @@ export function renderJsonTree(data: any, indentLevel = 0): HTMLElement {
 
       const keySpan = document.createElement('span');
       keySpan.className = 'devtools-json-key';
+      keySpan.style.whiteSpace = 'nowrap';
+      keySpan.style.flexShrink = '0';
       keySpan.textContent = isArray ? `[${key}]:` : `${key}:`;
 
       const valNode = renderJsonTree(data[key], 0);

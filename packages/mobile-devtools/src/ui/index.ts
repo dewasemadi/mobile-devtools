@@ -52,11 +52,10 @@ export class MobileDevToolsEngine {
 
     const config = this.store.getConfig();
     const isEnvDev = typeof process !== 'undefined' && process.env?.NODE_ENV === 'development';
-    const shouldRender = config.forceEnable ?? (config.enabled ?? isEnvDev ?? true);
+    const shouldRender = config.forceEnable ?? config.enabled ?? isEnvDev ?? true;
 
     if (!shouldRender) {
-      const dummyContainer =
-        isBrowser ? document.createElement('div') : ({} as HTMLElement);
+      const dummyContainer = isBrowser ? document.createElement('div') : ({} as HTMLElement);
       return { container: dummyContainer, store: this.store };
     }
 

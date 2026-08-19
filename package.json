@@ -11,9 +11,12 @@
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage",
     "test:e2e": "turbo run test:e2e",
+    "generate:screenshots": "pnpm --filter web screenshots",
     "publish-packages": "pnpm -r --filter \"./packages/**\" run build && pnpm -r --filter \"./packages/**\" publish --access public --no-git-checks"
   },
   "devDependencies": {
+    "eslint-plugin-tailwindcss": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "prettier": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:"

@@ -1,4 +1,4 @@
-import { NETWORK_TYPES } from '../constants';
+import { HTTP_METHODS, NETWORK_FRAME_TYPES, NETWORK_TYPES } from '../constants';
 import { DevToolsStore } from '../stores/devtools-store';
 import { isBrowser } from '../utils/env';
 import { generateId } from '../utils/id';
@@ -27,12 +27,18 @@ export class WebSocketInterceptor {
       store.addNetworkRequest({
         id,
         url: String(url),
-        method: 'WS',
+        method: HTTP_METHODS.WS,
         status: 101,
         statusText: 'Connecting',
         type: NETWORK_TYPES.WEBSOCKET,
         startTime,
-        requestHeaders: protocols ? { 'Sec-WebSocket-Protocol': Array.isArray(protocols) ? protocols.join(', ') : String(protocols) } : undefined,
+        requestHeaders: protocols
+          ? {
+              'Sec-WebSocket-Protocol': Array.isArray(protocols)
+                ? protocols.join(', ')
+                : String(protocols),
+            }
+          : undefined,
         frames: [],
       });
 
@@ -43,7 +49,7 @@ export class WebSocketInterceptor {
       ws.addEventListener('message', (event: MessageEvent) => {
         store.addNetworkFrame(id, {
           id: generateId('f'),
-          type: 'received',
+          type: NETWORK_FRAME_TYPES.RECEIVED,
           data: event.data,
           timestamp: Date.now(),
         });
@@ -66,7 +72,7 @@ export class WebSocketInterceptor {
       ws.send = function (data: any) {
         store.addNetworkFrame(id, {
           id: generateId('f'),
-          type: 'sent',
+          type: NETWORK_FRAME_TYPES.SENT,
           data: typeof data === 'object' ? JSON.stringify(data) : String(data),
           timestamp: Date.now(),
         });

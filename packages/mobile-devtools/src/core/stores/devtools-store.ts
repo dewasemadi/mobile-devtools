@@ -1,7 +1,9 @@
 import {
   BADGE_POSITIONS,
   BUILTIN_TABS,
+  DEFAULT_CONFIG_DEFAULTS,
   LOG_LEVELS,
+  NETWORK_THROTTLING,
   STORAGE_KEYS,
   THEME_MODES,
 } from '../constants';
@@ -30,8 +32,8 @@ export class DevToolsStore {
     position: BADGE_POSITIONS.BOTTOM_RIGHT,
     autoSnapBadge: false,
     interceptors: {
-      maxLogLimit: 200,
-      maxNetworkLimit: 100,
+      maxLogLimit: DEFAULT_CONFIG_DEFAULTS.MAX_LOG_LIMIT,
+      maxNetworkLimit: DEFAULT_CONFIG_DEFAULTS.MAX_NETWORK_LIMIT,
       enableConsoleInterceptor: true,
       enableFetchInterceptor: true,
       enableXhrInterceptor: true,
@@ -44,7 +46,7 @@ export class DevToolsStore {
   private networkRequests: NetworkRequestEntry[] = [];
   private badgePosition: DragPosition = { x: 20, y: 300 };
   private themeMode: ThemeMode = THEME_MODES.DARK;
-  private networkThrottling: NetworkThrottlingProfile = 'online';
+  private networkThrottling: NetworkThrottlingProfile = NETWORK_THROTTLING.ONLINE;
   private listeners: Set<StoreListener> = new Set();
 
   private unreadErrorCount = 0;
@@ -140,7 +142,7 @@ export class DevToolsStore {
     return this.themeMode;
   }
 
-  public getEffectiveThemeMode(): typeof THEME_MODES[keyof typeof THEME_MODES] {
+  public getEffectiveThemeMode(): (typeof THEME_MODES)[keyof typeof THEME_MODES] {
     const mode = this.getThemeMode();
     if (mode === THEME_MODES.AUTO) {
       if (isBrowser && window.matchMedia('(prefers-color-scheme: light)').matches) {

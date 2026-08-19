@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Check, Code2, Copy, Sliders, Terminal } from 'lucide-react';
 
-type FrameworkTab = 'react' | 'vue' | 'vanilla';
+type FrameworkTab = 'react' | 'vue' | 'svelte' | 'vanilla';
 
 export const CodeDocs: React.FC = () => {
   const [activeFramework, setActiveFramework] = useState<FrameworkTab>('react');
@@ -43,6 +43,8 @@ export const CodeDocs: React.FC = () => {
       code = `import { MobileDevTools } from 'mobile-devtools/react';\n\nexport default function App() {\n  return (\n    <>\n      <YourAppComponents />\n      <MobileDevTools />\n    </>\n  );\n}`;
     } else if (activeFramework === 'vue') {
       code = `<script setup>\nimport { MobileDevTools } from 'mobile-devtools/vue';\n</script>\n\n<template>\n  <MobileDevTools />\n</template>`;
+    } else if (activeFramework === 'svelte') {
+      code = `<script>\n  import { MobileDevTools } from 'mobile-devtools/svelte';\n</script>\n\n<MobileDevTools />`;
     } else {
       code = `import { createMobileDevTools } from 'mobile-devtools';\n\n// Initialize in any JS file\nconst devtools = createMobileDevTools({\n  theme: { mode: 'dark' },\n  position: 'bottom-right',\n});`;
     }
@@ -62,6 +64,8 @@ export const CodeDocs: React.FC = () => {
       code = `<MobileDevTools\n  title="My App Debugger"\n  position="bottom-right"\n  theme={{\n    mode: 'dark',\n    accentColor: '#ffffff',\n    backgroundColor: '#0a0a0a',\n  }}\n  customTabs={[\n    {\n      id: 'analytics',\n      title: 'Analytics',\n      render: (container) => {\n        container.innerHTML = '<h3>📊 Analytics Events</h3>';\n      }\n    }\n  ]}\n/>`;
     } else if (activeFramework === 'vue') {
       code = `<MobileDevTools\n  title="My App Debugger"\n  position="bottom-right"\n  :theme="{\n    mode: 'dark',\n    accentColor: '#ffffff',\n    backgroundColor: '#0a0a0a'\n  }"\n  :custom-tabs="[\n    {\n      id: 'analytics',\n      title: 'Analytics',\n      render: (container) => {\n        container.innerHTML = '<h3>📊 Analytics Events</h3>';\n      }\n    }\n  ]"\n/>`;
+    } else if (activeFramework === 'svelte') {
+      code = `<script>\n  import { MobileDevTools } from 'mobile-devtools/svelte';\n</script>\n\n<MobileDevTools\n  title="My App Debugger"\n  position="bottom-right"\n/>`;
     } else {
       code = `createMobileDevTools({\n  title: 'My App Debugger',\n  position: 'bottom-right',\n  theme: {\n    mode: 'dark',\n    accentColor: '#ffffff',\n    backgroundColor: '#0a0a0a',\n  },\n  customTabs: [\n    {\n      id: 'analytics',\n      title: 'Analytics',\n      render: (container) => {\n        container.innerHTML = '<h3>📊 Analytics Events</h3>';\n      }\n    }\n  ]\n});`;
     }
@@ -76,24 +80,24 @@ export const CodeDocs: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div className="mx-auto max-w-4xl space-y-4">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-dev-text-bright tracking-tight">
+          <h2 className="text-dev-text-bright text-xl font-bold tracking-tight sm:text-2xl">
             Quick Installation & Setup
           </h2>
-          <p className="text-xs text-dev-text-muted">
-            Integrate in under 30 seconds into React, Vue 3, or Vanilla JS applications.
+          <p className="text-dev-text-muted text-xs">
+            Integrate in under 30 seconds into React, Vue 3, Svelte 4/5, or Vanilla JS applications.
           </p>
         </div>
 
         {/* Framework Selector Tabs */}
-        <div className="inline-flex p-1 rounded-xl bg-dev-bg-100 border border-dev-border self-start sm:self-auto">
+        <div className="border-dev-border bg-dev-bg-100 inline-flex self-start rounded-xl border p-1 sm:self-auto">
           <button
             onClick={() => setActiveFramework('react')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer ${
+            className={`cursor-pointer rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${
               activeFramework === 'react'
-                ? 'bg-dev-bg-300 text-dev-text-bright border border-dev-border'
+                ? 'border-dev-border bg-dev-bg-300 text-dev-text-bright border'
                 : 'text-dev-text-muted hover:text-dev-text-bright'
             }`}
           >
@@ -101,19 +105,29 @@ export const CodeDocs: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveFramework('vue')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer ${
+            className={`cursor-pointer rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${
               activeFramework === 'vue'
-                ? 'bg-dev-bg-300 text-dev-text-bright border border-dev-border'
+                ? 'border-dev-border bg-dev-bg-300 text-dev-text-bright border'
                 : 'text-dev-text-muted hover:text-dev-text-bright'
             }`}
           >
             Vue 3
           </button>
           <button
+            onClick={() => setActiveFramework('svelte')}
+            className={`cursor-pointer rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${
+              activeFramework === 'svelte'
+                ? 'border-dev-border bg-dev-bg-300 text-dev-text-bright border'
+                : 'text-dev-text-muted hover:text-dev-text-bright'
+            }`}
+          >
+            Svelte
+          </button>
+          <button
             onClick={() => setActiveFramework('vanilla')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer ${
+            className={`cursor-pointer rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${
               activeFramework === 'vanilla'
-                ? 'bg-dev-bg-300 text-dev-text-bright border border-dev-border'
+                ? 'border-dev-border bg-dev-bg-300 text-dev-text-bright border'
                 : 'text-dev-text-muted hover:text-dev-text-bright'
             }`}
           >
@@ -123,71 +137,71 @@ export const CodeDocs: React.FC = () => {
       </div>
 
       {/* Card 1: Installation */}
-      <div className="bg-dev-bg-100 border border-dev-border rounded-2xl overflow-hidden">
-        <div className="px-4 py-2.5 bg-dev-bg-300 border-b border-dev-border flex items-center justify-between">
+      <div className="border-dev-border bg-dev-bg-100 overflow-hidden rounded-2xl border">
+        <div className="border-dev-border bg-dev-bg-300 flex items-center justify-between border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-status-success-text" />
-            <span className="text-xs font-mono text-dev-text-muted">terminal</span>
+            <Terminal className="text-status-success-text size-4" />
+            <span className="text-dev-text-muted font-mono text-xs">terminal</span>
           </div>
           <button
             onClick={handleCopyInstall}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-dev-bg-200 border border-dev-border text-dev-text-muted hover:text-dev-text-bright text-xs font-mono transition-colors cursor-pointer"
+            className="border-dev-border bg-dev-bg-200 text-dev-text-muted hover:text-dev-text-bright inline-flex cursor-pointer items-center gap-1 rounded-md border px-2.5 py-1 font-mono text-xs transition-colors"
           >
             {copiedInstall ? (
               <>
-                <Check className="w-3 h-3 text-status-success-text" />
+                <Check className="text-status-success-text size-3" />
                 <span className="text-status-success-text font-bold">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3 h-3 text-dev-text-muted" />
+                <Copy className="text-dev-text-muted size-3" />
                 <span>Copy</span>
               </>
             )}
           </button>
         </div>
-        <pre className="p-4 sm:p-5 font-mono text-xs text-dev-text-main overflow-x-auto leading-relaxed bg-dev-bg-100">
+        <pre className="bg-dev-bg-100 text-dev-text-main overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:p-5">
           <code>
             <span className="text-syntax-keyword">npm</span>{' '}
             <span className="text-syntax-string">install</span>{' '}
-            <span className="text-dev-text-bright font-semibold">
-              mobile-devtools
-            </span>
+            <span className="text-dev-text-bright font-semibold">mobile-devtools</span>
           </code>
         </pre>
       </div>
 
       {/* Card 2: Basic Framework Usage */}
-      <div className="bg-dev-bg-100 border border-dev-border rounded-2xl overflow-hidden">
-        <div className="px-4 py-2.5 bg-dev-bg-300 border-b border-dev-border flex items-center justify-between">
+      <div className="border-dev-border bg-dev-bg-100 overflow-hidden rounded-2xl border">
+        <div className="border-dev-border bg-dev-bg-300 flex items-center justify-between border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <Code2 className="w-4 h-4 text-syntax-function" />
-            <span className="text-xs font-mono text-dev-text-muted">
+            <Code2 className="text-syntax-function size-4" />
+            <span className="text-dev-text-muted font-mono text-xs">
               {activeFramework === 'react'
                 ? 'App.tsx'
                 : activeFramework === 'vue'
                   ? 'App.vue'
-                  : 'main.js'}
+                  : activeFramework === 'svelte'
+                    ? 'App.svelte'
+                    : 'main.js'}
             </span>
           </div>
           <button
             onClick={handleCopyUsage}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-dev-bg-200 border border-dev-border text-dev-text-muted hover:text-dev-text-bright text-xs font-mono transition-colors cursor-pointer"
+            className="border-dev-border bg-dev-bg-200 text-dev-text-muted hover:text-dev-text-bright inline-flex cursor-pointer items-center gap-1 rounded-md border px-2.5 py-1 font-mono text-xs transition-colors"
           >
             {copiedUsage ? (
               <>
-                <Check className="w-3 h-3 text-status-success-text" />
+                <Check className="text-status-success-text size-3" />
                 <span className="text-status-success-text font-bold">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3 h-3 text-dev-text-muted" />
+                <Copy className="text-dev-text-muted size-3" />
                 <span>Copy</span>
               </>
             )}
           </button>
         </div>
-        <pre className="p-4 sm:p-5 font-mono text-xs text-dev-text-main overflow-x-auto leading-relaxed bg-dev-bg-100">
+        <pre className="bg-dev-bg-100 text-dev-text-main overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:p-5">
           {activeFramework === 'react' && (
             <code>
               <span className="text-syntax-keyword">import</span> {'{'}{' '}
@@ -234,59 +248,88 @@ export const CodeDocs: React.FC = () => {
             </code>
           )}
 
+          {activeFramework === 'svelte' && (
+            <code>
+              &lt;<span className="text-syntax-keyword">script</span>&gt;
+              <br />
+              {'  '}
+              <span className="text-syntax-keyword">import</span> {'{'}{' '}
+              <span className="text-syntax-function">MobileDevTools</span> {'}'}{' '}
+              <span className="text-syntax-keyword">from</span>{' '}
+              <span className="text-syntax-string">&apos;mobile-devtools/svelte&apos;</span>;
+              <br />
+              &lt;/<span className="text-syntax-keyword">script</span>&gt;
+              <br />
+              <br />
+              &lt;<span className="text-syntax-function">MobileDevTools</span> /&gt;
+            </code>
+          )}
+
           {activeFramework === 'vanilla' && (
             <code>
+              <span className="text-syntax-comment italic">
+                {'// Option A: ESM Import (npm install mobile-devtools)'}
+              </span>
+              <br />
               <span className="text-syntax-keyword">import</span> {'{'}{' '}
               <span className="text-syntax-function">createMobileDevTools</span> {'}'}{' '}
               <span className="text-syntax-keyword">from</span>{' '}
               <span className="text-syntax-string">&apos;mobile-devtools&apos;</span>;
               <br />
+              <span className="text-syntax-function">createMobileDevTools</span>();
+              <br />
               <br />
               <span className="text-syntax-comment italic">
-                {'// Initialize DevTools in any JS file'}
+                {'// Option B: Direct CDN / UNPKG script (No build step required)'}
               </span>
               <br />
-              <span className="text-syntax-keyword">const</span>{' '}
-              <span className="text-dev-text-bright">devtools</span> ={' '}
-              <span className="text-syntax-function">createMobileDevTools</span>({'{'}
+              &lt;<span className="text-syntax-keyword">script</span>{' '}
+              <span className="text-syntax-parameter">type</span>=
+              <span className="text-syntax-string">&quot;module&quot;</span>&gt;
               <br />
               {'  '}
-              <span className="text-syntax-parameter">theme</span>: {'{'} mode:{' '}
-              <span className="text-syntax-string">&apos;dark&apos;</span> {'}'},<br />
+              <span className="text-syntax-keyword">import</span> {'{'}{' '}
+              <span className="text-syntax-function">createMobileDevTools</span> {'}'}{' '}
+              <span className="text-syntax-keyword">from</span>{' '}
+              <span className="text-syntax-string">
+                &apos;https://unpkg.com/mobile-devtools&apos;
+              </span>
+              ;
+              <br />
               {'  '}
-              <span className="text-syntax-parameter">position</span>:{' '}
-              <span className="text-syntax-string">&apos;bottom-right&apos;</span>,<br />
-              {'}'});
+              <span className="text-syntax-function">createMobileDevTools</span>();
+              <br />
+              &lt;/<span className="text-syntax-keyword">script</span>&gt;
             </code>
           )}
         </pre>
       </div>
 
       {/* Card 3: Advanced Customization Example */}
-      <div className="bg-dev-bg-100 border border-dev-border rounded-2xl overflow-hidden">
-        <div className="px-4 py-2.5 bg-dev-bg-300 border-b border-dev-border flex items-center justify-between">
+      <div className="border-dev-border bg-dev-bg-100 overflow-hidden rounded-2xl border">
+        <div className="border-dev-border bg-dev-bg-300 flex items-center justify-between border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-purple-400" />
-            <span className="text-xs font-mono text-dev-text-muted">Customization</span>
+            <Sliders className="size-4 text-purple-400" />
+            <span className="text-dev-text-muted font-mono text-xs">Customization</span>
           </div>
           <button
             onClick={handleCopyCustom}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-dev-bg-200 border border-dev-border text-dev-text-muted hover:text-dev-text-bright text-xs font-mono transition-colors cursor-pointer"
+            className="border-dev-border bg-dev-bg-200 text-dev-text-muted hover:text-dev-text-bright inline-flex cursor-pointer items-center gap-1 rounded-md border px-2.5 py-1 font-mono text-xs transition-colors"
           >
             {copiedCustom ? (
               <>
-                <Check className="w-3 h-3 text-status-success-text" />
+                <Check className="text-status-success-text size-3" />
                 <span className="text-status-success-text font-bold">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3 h-3 text-dev-text-muted" />
+                <Copy className="text-dev-text-muted size-3" />
                 <span>Copy</span>
               </>
             )}
           </button>
         </div>
-        <pre className="p-4 sm:p-5 font-mono text-xs text-dev-text-main overflow-x-auto leading-relaxed bg-dev-bg-100">
+        <pre className="bg-dev-bg-100 text-dev-text-main overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:p-5">
           <code>
             {activeFramework === 'react' && (
               <>
@@ -317,7 +360,8 @@ export const CodeDocs: React.FC = () => {
                 <br />
                 {'      '}container.innerHTML ={' '}
                 <span className="text-syntax-string">
-                  &apos;&lt;div style=&quot;padding:16px&quot;&gt;📊 Analytics Events&lt;/div&gt;&apos;
+                  &apos;&lt;div style=&quot;padding:16px&quot;&gt;📊 Analytics
+                  Events&lt;/div&gt;&apos;
                 </span>
                 ;
                 <br />
@@ -360,6 +404,33 @@ export const CodeDocs: React.FC = () => {
               </>
             )}
 
+            {activeFramework === 'svelte' && (
+              <>
+                &lt;<span className="text-syntax-keyword">script</span>&gt;
+                <br />
+                {'  '}
+                <span className="text-syntax-keyword">import</span> {'{'}{' '}
+                <span className="text-syntax-function">MobileDevTools</span> {'}'}{' '}
+                <span className="text-syntax-keyword">from</span>{' '}
+                <span className="text-syntax-string">&apos;mobile-devtools/svelte&apos;</span>;
+                <br />
+                &lt;/<span className="text-syntax-keyword">script</span>&gt;
+                <br />
+                <br />
+                &lt;<span className="text-syntax-function">MobileDevTools</span>
+                <br />
+                {'  '}
+                <span className="text-syntax-parameter">title</span>=
+                <span className="text-syntax-string">&quot;My App Debugger&quot;</span>
+                <br />
+                {'  '}
+                <span className="text-syntax-parameter">position</span>=
+                <span className="text-syntax-string">&quot;bottom-right&quot;</span>
+                <br />
+                /&gt;
+              </>
+            )}
+
             {activeFramework === 'vanilla' && (
               <>
                 <span className="text-syntax-function">createMobileDevTools</span>({'{'}
@@ -384,13 +455,16 @@ export const CodeDocs: React.FC = () => {
                 <br />
                 {'      '}container.innerHTML ={' '}
                 <span className="text-syntax-string">
-                  &apos;&lt;div style=&quot;padding:16px&quot;&gt;📊 Analytics Events&lt;/div&gt;&apos;
+                  &apos;&lt;div style=&quot;padding:16px&quot;&gt;📊 Analytics
+                  Events&lt;/div&gt;&apos;
                 </span>
                 ;<br />
                 {'    '}
-                {'}'}<br />
+                {'}'}
+                <br />
                 {'  '}
-                {'}'}],<br />
+                {'}'}],
+                <br />
                 {'}'});
               </>
             )}
