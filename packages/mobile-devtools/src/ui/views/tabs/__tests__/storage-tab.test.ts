@@ -73,4 +73,18 @@ describe('StorageTabView', () => {
     selects = el.querySelectorAll('select.devtools-select');
     expect(selects.length).toBe(1);
   });
+
+  it('should handle empty indexedDB list cleanly without hanging or infinite loop', async () => {
+    vi.spyOn(StorageManager, 'getIndexedDBs').mockResolvedValue([]);
+
+    const el = tabView.render();
+    const select = el.querySelector('select.devtools-select') as HTMLSelectElement;
+
+    select.value = 'indexedDB';
+    select.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 20));
+
+    const text = el.textContent || '';
+    expect(text).toContain('No IndexedDB databases found');
+  });
 });

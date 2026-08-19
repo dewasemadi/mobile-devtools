@@ -1,5 +1,5 @@
-import { copyToClipboard, DevToolsStore, isBrowser } from '../../../core';
-import { CHECK_ICON } from '../../icons';
+import { copyToClipboard, DevToolsStore, isBrowser, LocationManager } from '../../../core';
+import { CHECK_ICON, COPY_ICON } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 export class SystemTabView {
@@ -13,6 +13,8 @@ export class SystemTabView {
   public render(): HTMLElement {
     this.container.innerHTML = '';
     this.container.style.padding = '14px';
+    this.container.style.overflowY = 'auto';
+    this.container.style.flex = '1';
     setupScrollLockGuard(this.container);
 
     if (!isBrowser) {
@@ -37,11 +39,50 @@ export class SystemTabView {
         )}MB`
       : 'N/A';
 
+    // 1. URL Section
+    const locDetails = LocationManager.getLocationDetails();
+    const currentHref = locDetails.href || 'about:blank';
+
+    const urlTopBar = document.createElement('div');
+    urlTopBar.style.display = 'flex';
+    urlTopBar.style.justifyContent = 'space-between';
+    urlTopBar.style.alignItems = 'center';
+    urlTopBar.style.marginBottom = '8px';
+
+    const urlTitle = document.createElement('h3');
+    urlTitle.style.fontSize = '13px';
+    urlTitle.style.fontWeight = '700';
+    urlTitle.style.color = 'var(--dev-text-bright)';
+    urlTitle.textContent = 'URL';
+
+    const copyUrlBtn = document.createElement('button');
+    copyUrlBtn.className = 'devtools-btn devtools-btn-icon-only';
+    copyUrlBtn.title = 'Copy URL';
+    copyUrlBtn.innerHTML = COPY_ICON;
+    copyUrlBtn.addEventListener('click', async () => {
+      await copyToClipboard(currentHref);
+      copyUrlBtn.innerHTML = CHECK_ICON;
+      setTimeout(() => {
+        copyUrlBtn.innerHTML = COPY_ICON;
+      }, 1500);
+    });
+
+    urlTopBar.appendChild(urlTitle);
+    urlTopBar.appendChild(copyUrlBtn);
+
+    const urlBox = document.createElement('div');
+    urlBox.className = 'devtools-user-agent-box';
+    urlBox.style.marginBottom = '16px';
+    urlBox.style.wordBreak = 'break-all';
+    urlBox.style.fontFamily = 'var(--dev-font-mono)';
+    urlBox.textContent = currentHref;
+
+    // 2. System & Environment Info Section
     const topBar = document.createElement('div');
     topBar.style.display = 'flex';
     topBar.style.justifyContent = 'space-between';
     topBar.style.alignItems = 'center';
-    topBar.style.marginBottom = '14px';
+    topBar.style.marginBottom = '8px';
 
     const h3 = document.createElement('h3');
     h3.style.fontSize = '13px';
@@ -50,17 +91,16 @@ export class SystemTabView {
     h3.textContent = 'System & Environment Info';
 
     const copyBtn = document.createElement('button');
-    copyBtn.className = 'devtools-btn';
-    copyBtn.textContent = 'Copy Info';
+    copyBtn.className = 'devtools-btn devtools-btn-icon-only';
+    copyBtn.title = 'Copy System Info';
+    copyBtn.innerHTML = COPY_ICON;
     copyBtn.addEventListener('click', async () => {
       const info = `User Agent: ${ua}\nScreen: ${screenWidth}x${screenHeight}\nViewport: ${innerWidth}x${innerHeight}\nDPR: ${dpr}\nTouch Support: ${touchSupport}\nLanguage: ${lang}\nMemory: ${memory}`;
-      const ok = await copyToClipboard(info);
-      copyBtn.innerHTML = ok
-        ? `<span style="display:inline-flex;align-items:center;gap:4px">${CHECK_ICON} Copied</span>`
-        : 'Failed';
+      await copyToClipboard(info);
+      copyBtn.innerHTML = CHECK_ICON;
       setTimeout(() => {
-        copyBtn.textContent = 'Copy Info';
-      }, 2000);
+        copyBtn.innerHTML = COPY_ICON;
+      }, 1500);
     });
 
     topBar.appendChild(h3);
@@ -104,6 +144,8 @@ export class SystemTabView {
       </tbody>
     `;
 
+    this.container.appendChild(urlTopBar);
+    this.container.appendChild(urlBox);
     this.container.appendChild(topBar);
     this.container.appendChild(uaBox);
     this.container.appendChild(table);

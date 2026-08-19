@@ -116,8 +116,9 @@ export class StorageTabView {
 
       if (this.storageType === STORAGE_TYPES.INDEXED_DB) {
         await this.loadIndexedDBs();
+      } else {
+        this.render();
       }
-      this.render();
     });
 
     row2.appendChild(storageSelect);
@@ -177,38 +178,46 @@ export class StorageTabView {
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);
 
-    if (this.storageType === 'indexedDB' && this.indexedDBs.length === 0) {
-      this.loadIndexedDBs();
-    } else {
-      this.updateList();
-    }
+    this.updateList();
 
     return this.container;
   }
 
   private async loadIndexedDBs() {
     this.isLoadingIDB = true;
-    this.indexedDBs = await StorageManager.getIndexedDBs();
-    if (this.indexedDBs.length > 0) {
-      if (!this.selectedDBName || !this.indexedDBs.some((d) => d.name === this.selectedDBName)) {
-        this.selectedDBName = this.indexedDBs[0].name;
-      }
-      const currentDB = this.indexedDBs.find((d) => d.name === this.selectedDBName);
-      if (currentDB && currentDB.storeNames.length > 0) {
-        if (!this.selectedStoreName || !currentDB.storeNames.includes(this.selectedStoreName)) {
-          this.selectedStoreName = currentDB.storeNames[0];
+    this.updateList();
+
+    try {
+      this.indexedDBs = await StorageManager.getIndexedDBs();
+      if (this.indexedDBs.length > 0) {
+        if (!this.selectedDBName || !this.indexedDBs.some((d) => d.name === this.selectedDBName)) {
+          this.selectedDBName = this.indexedDBs[0].name;
+        }
+        const currentDB = this.indexedDBs.find((d) => d.name === this.selectedDBName);
+        if (currentDB && currentDB.storeNames.length > 0) {
+          if (!this.selectedStoreName || !currentDB.storeNames.includes(this.selectedStoreName)) {
+            this.selectedStoreName = currentDB.storeNames[0];
+          }
+        } else {
+          this.selectedStoreName = null;
         }
       } else {
+        this.selectedDBName = null;
         this.selectedStoreName = null;
       }
-    } else {
+      await this.loadIDBRecords(false);
+    } catch {
+      this.indexedDBs = [];
       this.selectedDBName = null;
       this.selectedStoreName = null;
+      this.idbRecords = [];
+    } finally {
+      this.isLoadingIDB = false;
+      this.render();
     }
-    await this.loadIDBRecords();
   }
 
-  private async loadIDBRecords() {
+  private async loadIDBRecords(triggerRender = true) {
     if (this.selectedDBName && this.selectedStoreName) {
       this.idbRecords = await StorageManager.getIndexedDBRecords(
         this.selectedDBName,
@@ -218,7 +227,9 @@ export class StorageTabView {
       this.idbRecords = [];
     }
     this.isLoadingIDB = false;
-    this.render();
+    if (triggerRender) {
+      this.updateList();
+    }
   }
 
   private getItems(): { key: string; value: string }[] {
