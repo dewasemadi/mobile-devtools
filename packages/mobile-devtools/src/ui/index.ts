@@ -18,6 +18,7 @@ import { applyThemeVariables } from './utils/theme-helper';
 declare const process: any;
 
 export { SHADOW_STYLES, applyThemeVariables };
+export * from './icons';
 
 export class MobileDevToolsEngine {
   private store: DevToolsStore;

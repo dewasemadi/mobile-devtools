@@ -5,6 +5,24 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-08-19
+
+### 🌐 Live Mobile WebView URL Inspector & Storage Freeze Fix
+
+#### Added
+
+- **Live Mobile WebView URL Inspector**: System Tab support for inspecting and copying the current active page URL (`window.location.href`), designed specifically for Mobile WebViews (iOS `WKWebView`, Android `WebView`, Gojek/Grab/Instagram in-app browsers).
+- **Real-time SPA Route Tracking**: `LocationManager` automatically tracks Single-Page Application (SPA) route changes in real time across React Router, Vue Router, and SvelteKit via `popstate`, `hashchange`, and history method interception (`pushState`, `replaceState`).
+- **Icon-Only Action Buttons**: Updated Copy URL and Copy Info actions in System Tab to clean icon-only buttons with instant `✓` toast feedback.
+
+#### Fixed & Improved
+
+- **IndexedDB Empty State Recursion Freeze**: Fixed an infinite re-render loop in `StorageTabView` that froze the drawer when switching to `indexedDB` on origins with zero databases.
+- **System Tab Scrollability**: Fixed an issue where `SystemTabView` content could not be scrolled by applying `overflowY: 'auto'` and `flex: 1`.
+- **NPM Package Footprint**: Simplified `"files": ["dist"]` in `package.json` and set `publicDir: false` in `vite.config.ts`, keeping `node_modules` footprint ultra-lean (~153 kB).
+
+---
+
 ## [1.4.0] - 2026-08-19
 
 ### 📱 IndexedDB Inspector, Status Breakdown Filters, Automated Screenshots & Svelte Harness

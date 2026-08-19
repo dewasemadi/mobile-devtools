@@ -13,6 +13,11 @@ export { WebSocketInterceptor } from './interceptors/websocket-interceptor';
 export { SSEInterceptor } from './interceptors/sse-interceptor';
 export { StorageManager } from './managers/storage-manager';
 export { SystemManager } from './managers/system-manager';
+export {
+  LocationManager,
+  type LocationDetails,
+  type LocationChangeListener,
+} from './managers/location-manager';
 export { ElementsManager, STYLE_CATEGORIES } from './managers/elements-manager';
 export { ShadowHostManager } from './dom/shadow-host';
 
