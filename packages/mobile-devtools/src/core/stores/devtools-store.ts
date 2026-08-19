@@ -69,7 +69,10 @@ export class DevToolsStore {
         if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
           this.badgePosition = parsed;
         }
+      } else if (this.config.position) {
+        this.badgePosition = getDefaultPosition(this.config.position);
       }
+
       const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ThemeMode;
       if (
         savedTheme === THEME_MODES.DARK ||
@@ -82,9 +85,6 @@ export class DevToolsStore {
       }
     } catch {
       // fallback
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.POSITION)) {
-      this.badgePosition = getDefaultPosition(this.config.position);
     }
   }
 
@@ -105,10 +105,31 @@ export class DevToolsStore {
         ...newConfig.theme,
       },
     };
-    if (newConfig.theme?.mode) {
+
+    let hasSavedTheme = false;
+    let hasSavedPos = false;
+    if (isBrowser) {
+      try {
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
+        if (
+          savedTheme === THEME_MODES.DARK ||
+          savedTheme === THEME_MODES.LIGHT ||
+          savedTheme === THEME_MODES.AUTO
+        ) {
+          hasSavedTheme = true;
+        }
+        if (localStorage.getItem(STORAGE_KEYS.POSITION)) {
+          hasSavedPos = true;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (newConfig.theme?.mode && !hasSavedTheme) {
       this.themeMode = newConfig.theme.mode;
     }
-    if (newConfig.position) {
+    if (newConfig.position && !hasSavedPos) {
       this.badgePosition = getDefaultPosition(newConfig.position);
     }
     if (newConfig.initialTab) {

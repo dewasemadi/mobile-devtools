@@ -299,7 +299,7 @@ export const SHADOW_STYLES = `
   visibility: hidden;
   pointer-events: none;
   overscroll-behavior: contain;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -595,6 +595,9 @@ export const SHADOW_STYLES = `
   font-size: 12px;
   font-family: var(--dev-font-mono);
   outline: none;
+  touch-action: pan-x pan-y;
+  -webkit-user-select: text;
+  user-select: text;
   transition: border-color 0.15s ease;
 }
 
@@ -1090,13 +1093,12 @@ export const SHADOW_STYLES = `
 .devtools-styles-list, .devtools-attrs-list {
   font-family: var(--dev-font-mono);
   font-size: 11px;
-  padding-left: 8px;
 }
 
 .devtools-style-row, .devtools-attr-row {
   display: flex;
   align-items: center;
-  padding: 4px 8px;
+  padding: 8px 0;
   border-bottom: 1px solid var(--dev-card-border);
 }
 
@@ -1130,13 +1132,24 @@ export const SHADOW_STYLES = `
 
 .devtools-attr-input {
   flex: 1;
+  min-width: 0;
+  height: 32px;
   background: var(--dev-card-bg);
-  border: 1px solid var(--dev-border);
+  border: 1px solid var(--dev-card-border);
   color: var(--dev-text-bright);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 12px;
   font-family: var(--dev-font-mono);
   margin: 0 6px;
+  outline: none;
+  touch-action: pan-x pan-y;
+  -webkit-user-select: text;
+  user-select: text;
+  transition: border-color 0.15s ease;
+}
+
+.devtools-attr-input:focus {
+  border-color: var(--dev-accent);
 }
 `;

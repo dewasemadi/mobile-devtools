@@ -5,6 +5,19 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2] - 2026-08-19
+
+### 🎨 Theme Persistence, Input Touch Navigation & Elements UI Polish
+
+#### Fixed & Improved
+
+- **Theme Mode & Badge Position Persistence**: Fixed an issue where saved theme preference (`__mobile_devtools_theme__`) and badge position (`__mobile_devtools_position__`) in `localStorage` were overridden back to initial config defaults when `updateConfig()` ran during framework component mounts (React `useEffect`, Vue watcher, or SPA page reloads).
+- **Mobile & Desktop Input Touch Scroll**: Resolved a scroll lock issue where horizontal text panning and caret selection inside input fields (`.devtools-search-input`, `.devtools-attr-input`) were blocked on mobile touch devices and Chrome Desktop.
+- **Directional Scroll Lock Guard**: Refined `setupScrollLockGuard` with directional touch detection to prevent scroll jamming across Chrome Desktop emulation and mobile touch viewports while isolating host page bounce.
+- **Attributes Input & Add Button UI**: Aligned `.devtools-attr-input` styling to 32px height matching standard search inputs and action buttons, and repositioned the "Add Attribute" (`+`) button to the far right of the attributes toolbar header.
+
+---
+
 ## [1.5.1] - 2026-08-19
 
 ### 🌐 Live Mobile WebView URL Inspector & Storage Freeze Fix
