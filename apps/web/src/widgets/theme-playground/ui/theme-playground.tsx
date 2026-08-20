@@ -536,7 +536,7 @@ export const ThemePlayground: React.FC = () => {
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value as BadgePositionPreset)}
-                className="border-dev-border bg-dev-bg-300 text-dev-text-bright w-full cursor-pointer appearance-none rounded-md border bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%2394a3b8%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpolyline%20points=%276%209%2012%2015%2018%209%27%3e%3c/polyline%3e%3c/svg%3e')] bg-[length:16px_16px] bg-[right_12px_center] bg-no-repeat px-3.5 py-2 pr-10 font-mono text-xs focus:border-sky-500 focus:outline-none"
+                className="border-dev-border bg-dev-bg-300 text-dev-text-bright w-full cursor-pointer appearance-none rounded-md border bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%2394a3b8%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpolyline%20points=%276%209%2012%2015%2018%209%27%3e%3c/polyline%3e%3c/svg%3e')] bg-size-[16px_16px] bg-position-[right_12px_center] bg-no-repeat px-3.5 py-2 pr-10 font-mono text-xs focus:border-sky-500 focus:outline-none"
               >
                 {positionPresets.map((p) => (
                   <option key={p.value} value={p.value}>

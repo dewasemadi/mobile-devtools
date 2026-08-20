@@ -60,42 +60,57 @@ export default function App() {
 
 ---
 
-## 🎨 2. Fine-Grained UI Styling (`styles`)
+## 🎨 2. Custom CSS Style Injection (`styles`)
 
-Customize individual DevTools UI components without breaking the Shadow DOM isolation.
-
-### `styles` Object Structure:
-
-```ts
-export interface DevToolsStyles {
-  badge?: Record<string, string>;
-  drawer?: Record<string, string>;
-  overlay?: Record<string, string>;
-  handle?: Record<string, string>;
-}
-```
+Inject raw CSS strings directly into the DevTools Shadow DOM container to style any internal element, state, or animation.
 
 ### Example Usage:
 
 ```tsx
 <MobileDevTools
   title="Custom App Debugger"
-  styles={{
-    badge: {
-      opacity: '0.9',
-      borderRadius: '12px',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-    },
-    drawer: {
-      maxHeight: '85vh',
-      backgroundColor: '#090d16',
-      borderTopLeftRadius: '20px',
-      borderTopRightRadius: '20px',
-    },
-    overlay: {
-      backdropFilter: 'blur(8px)',
-      backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    },
+  styles={`
+    .devtools-badge {
+      border-radius: 4px;
+      opacity: 0.9;
+    }
+    .devtools-badge:hover {
+      transform: scale(1.08);
+    }
+    .devtools-tab-btn.active {
+      background: #6366f1;
+    }
+    .devtools-drawer {
+      max-height: 85vh;
+    }
+  `}
+/>
+```
+
+---
+
+## 🏷️ 3. Custom Badge Crafting with Drag & Drop (`renderBadge`)
+
+Replace the inner HTML/DOM structure of the floating badge while **retaining 100% of the drag-and-drop gesture handling, viewport clamping, and edge snapping functionality**.
+
+### Example Usage:
+
+```tsx
+<MobileDevTools
+  title="My App"
+  autoSnapBadge={true}
+  renderBadge={(container, { unreadErrors, isOpen }) => {
+    container.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 6px; padding: 2px 4px;">
+        <span style="font-size: 14px;">🚀</span>
+        <span style="font-weight: 700; color: #f8fafc; font-size: 11px;">MY DEBUGGER</span>
+        ${
+          unreadErrors > 0
+            ? `<span style="background: #ef4444; color: #ffffff; padding: 1px 6px; border-radius: 99px; font-size: 10px; font-weight: 800;">${unreadErrors}</span>`
+            : ''
+        }
+      </div>
+    `;
   }}
 />
 ```

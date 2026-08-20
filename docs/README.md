@@ -25,12 +25,12 @@ Welcome to the comprehensive technical documentation for **`mobile-devtools`** â
    - **Bug Exporter**: 1-click Web Share API (`navigator.share`) report generator.
 
 4. [**04. Full Configuration & API Reference**](./04-configuration-api.md)
-   - Exhaustive TypeScript interfaces (`DevToolsConfig`, `DevToolsTheme`, `DevToolsStyles`, `CustomTabDefinition`, `PrivacyConfig`).
+   - Exhaustive TypeScript interfaces (`DevToolsConfig`, `DevToolsTheme`, `BadgeRenderProps`, `CustomTabDefinition`, `PrivacyConfig`).
    - Complete props and option descriptions with defaults.
 
 5. [**05. Custom Tabs & Fine-Grained Styling**](./05-custom-tabs-and-styles.md)
    - Building pluggable consumer tabs with custom DOM rendering callbacks (`render(container)`).
-   - Fine-grained UI style overrides (`styles={{ badge, drawer, overlay, handle }}`).
+   - Custom raw CSS injection into Shadow DOM (`styles`) and Custom Badge crafting (`renderBadge`).
 
 6. [**06. Production Safety & Security**](./06-production-and-security.md)
    - Zero-bundle-leak tree-shaking dynamic import patterns.

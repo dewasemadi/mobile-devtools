@@ -63,6 +63,9 @@ export class MobileDevToolsEngine {
     this.shadowHostManager = new ShadowHostManager();
     const { container } = this.shadowHostManager.mount(config.container);
     this.shadowHostManager.injectStyles(SHADOW_STYLES);
+    if (config.styles && typeof config.styles === 'string') {
+      this.shadowHostManager.injectStyles(config.styles);
+    }
     this.shadowContainer = container;
 
     // Apply Theme

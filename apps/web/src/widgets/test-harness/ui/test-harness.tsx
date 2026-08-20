@@ -16,6 +16,7 @@ export const TestHarness: React.FC = () => {
       }
     };
   }, []);
+
   const triggerConsoleLog = () => {
     console.log('🚀 User triggered console log', {
       timestamp: new Date().toISOString(),

@@ -2,7 +2,7 @@
 
 > **Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications**
 
-[![Bundle Size](https://img.shields.io/badge/Bundle_Size-~2.0_kB_gzipped-10b981.svg)](https://bundlephobia.com/)
+[![Bundle Size](https://img.shields.io/badge/Bundle_Size-~32.2_kB_gzipped-10b981.svg)](https://bundlephobia.com/package/mobile-devtools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org/)
 [![Turborepo](https://img.shields.io/badge/Monorepo-Turborepo-ef4444.svg)](https://turbo.build/)
@@ -62,7 +62,7 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
 
 ## ✨ Core Capabilities
 
-- ⚡ **Ultra-Lightweight & Fast**: Extremely small footprint (**~2.0 kB gzipped** / **~5.8 kB minified**) with zero runtime dependencies, ensuring zero impact on page load speed or mobile frame rates.
+- ⚡ **Ultra-Lightweight & Fast**: Small footprint (**~32.2 kB gzipped** / **~135.9 kB minified**) with zero runtime dependencies, ensuring zero impact on page load speed or mobile frame rates.
 - 🌳 **DOM Elements Inspector (Elements Tab)**: Real-time HTML DOM tree browser, node expansion, interactive element picker, box model visualization (margin, border, padding, content), computed CSS styles, and grouped style categories (Layout, Flexbox, Grid, Typography, Colors).
 - 🚀 **Quick Bug Exporter**: Instant 1-click bug report sharing via Web Share API (`navigator.share`) to WhatsApp, Telegram, Slack, AirDrop, or Email with text file download and copy fallbacks.
 - 🌐 **Network Throttling Simulator**: Simulate `Slow 3G`, `Fast 3G`, or `Offline` connection modes directly on mobile devices with synthetic latency injection.
@@ -75,7 +75,7 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
 - 🔌 **Pluggable Custom Tabs (`customTabs`)**: Easily extend DevTools by adding custom tabs with your own DOM rendering callbacks (`render(container)`).
 - 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
 - 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
-- 🧪 **Comprehensive Test Suite**: Tested with **106 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
+- 🧪 **Comprehensive Test Suite**: Tested with **111 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
 - 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, **Svelte 4/5**, and **Vanilla JS**.
 
 ---
@@ -145,8 +145,9 @@ export default function App() {
         position="bottom-right"
         enabledTabs={['console', 'elements', 'network', 'storage', 'system']}
         theme={{ mode: 'dark', accentColor: '#0070f3' }}
-        styles={{
-          badge: { opacity: '0.9' },
+        styles=".devtools-badge { opacity: 0.9; }"
+        renderBadge={(container, { unreadErrors }) => {
+          container.innerHTML = `<span style="color:#fff;">🐞 My Debugger ${unreadErrors ? `(${unreadErrors})` : ''}</span>`;
         }}
         customTabs={[
           {
@@ -254,10 +255,7 @@ const devtools = createMobileDevTools({
     mode: 'dark',
     accentColor: '#0070f3',
   },
-  styles: {
-    badge: { opacity: '0.9' },
-    drawer: { maxHeight: '85vh' },
-  },
+  styles: `.devtools-badge { opacity: 0.9; } .devtools-drawer { max-height: 85vh; }`,
   customTabs: [
     {
       id: 'analytics',
@@ -301,7 +299,7 @@ Below is the complete reference table for all configuration options supported by
 | `initialTab`                | `DevToolsTabId`         | `'console'`                                               | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
 | `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']` | Filter which tabs are enabled in drawer                                                                                               |
 | `customTabs`                | `CustomTabDefinition[]` | `[]`                                                      | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
-| `styles`                    | `DevToolsStyles`        | `undefined`                                               | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
+| `styles`                    | `string`                | `undefined`                                               | Custom raw CSS string injected into DevTools Shadow DOM root                                                                          |
 | `defaultOpen`               | `boolean`               | `false`                                                   | Set to `true` to open drawer automatically on mount                                                                                   |
 | `autoSnapBadge`             | `boolean`               | `false`                                                   | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
 | `shakeToToggle`             | `boolean`               | `true`                                                    | Enable physical device shake motion gesture to toggle DevTools drawer                                                                 |
@@ -328,10 +326,10 @@ Below is the complete reference table for all configuration options supported by
     accentColor: '#10b981',
     backgroundColor: '#0c0c0e',
   }}
-  styles={{
-    badge: { borderRadius: '12px' },
-    drawer: { borderTopLeftRadius: '20px', borderTopRightRadius: '20px' },
-  }}
+  styles={`
+    .devtools-badge { border-radius: 12px; }
+    .devtools-drawer { border-top-left-radius: 20px; border-top-right-radius: 20px; }
+  `}
 />
 ```
 

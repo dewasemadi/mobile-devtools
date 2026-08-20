@@ -30,131 +30,131 @@ export const ApiTable: React.FC = () => {
           </thead>
           <tbody className="divide-dev-border-subtle divide-y">
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   enabled
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   boolean
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-status-success-border bg-status-success-bg text-status-success-text inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold sm:px-2 sm:text-xs">
                   true
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Enable or disable the DevTools overlay. Automatically set to{' '}
                 <code className="text-dev-text-bright">false</code> in production builds.
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   forceEnable
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   boolean
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   false
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Force enable DevTools overlay in production builds for QA testing &amp; staging
                 previews.
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   defaultOpen
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   boolean
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   false
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Automatically open the DevTools drawer on initial page mount.
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   title
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   string
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-status-info-border bg-status-info-bg text-status-info-text inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2 sm:text-xs">
                   &apos;DevTools&apos;
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Custom brand title text displayed inside both the floating badge and header drawer
                 badge.
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   icon
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   ReactNode | string
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   undefined
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Custom brand logo SVG element or emoji to display in the floating badge &amp; drawer
                 header.
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   position
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   BadgePositionPreset | BadgePosition
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-status-info-border bg-status-info-bg text-status-info-text inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2 sm:text-xs">
                   &apos;bottom-right&apos;
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Screen placement preset (
                 <code className="text-dev-text-bright">&apos;top-left&apos;</code>,{' '}
                 <code className="text-dev-text-bright">&apos;top-right&apos;</code>,{' '}
@@ -169,95 +169,116 @@ export const ApiTable: React.FC = () => {
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   autoSnapBadge
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   boolean
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   false
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Automatically snaps floating badge to the nearest screen edge on drag release.
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
-                  shakeToToggle
+                  renderBadge
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
-                  boolean
+                  (container, props) =&gt; void
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
-                <span className="border-status-success-border bg-status-success-bg text-status-success-text inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold sm:px-2 sm:text-xs">
-                  true
-                </span>
-              </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
-                Enable physical device shake motion gesture sensor fusion to toggle DevTools drawer.
-              </td>
-            </tr>
-
-            <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
-                <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
-                  styles
-                </span>
-              </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
-                <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
-                  DevToolsStyles
-                </span>
-              </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   undefined
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
-                Custom style overrides for UI elements (
-                <code className="text-dev-text-bright">badge</code>,{' '}
-                <code className="text-dev-text-bright">drawer</code>,{' '}
-                <code className="text-dev-text-bright">overlay</code>).
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
+                Custom render callback function to craft inner floating badge DOM structure while retaining drag &amp; drop gesture handling.
                 <div className="text-dev-text-bright mt-2 text-xs font-semibold">Example:</div>
                 <pre className="border-dev-border bg-dev-bg-300 text-dev-text-bright mt-1 rounded-md border p-2 font-mono text-[10px] break-all whitespace-pre-wrap sm:p-2.5 sm:text-[11px]">
-                  {`styles: {
-  badge: { opacity: '0.9' },
-  drawer: { maxHeight: '90vh' }
+                  {`renderBadge: (container, { unreadErrors }) => {
+  container.innerHTML = \`<img src="/logo.png" />\`;
 }`}
                 </pre>
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
+                <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
+                  shakeToToggle
+                </span>
+              </td>
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
+                <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
+                  boolean
+                </span>
+              </td>
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
+                <span className="border-status-success-border bg-status-success-bg text-status-success-text inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold sm:px-2 sm:text-xs">
+                  true
+                </span>
+              </td>
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
+                Enable physical device shake motion gesture sensor fusion to toggle DevTools drawer.
+              </td>
+            </tr>
+
+            <tr className="hover:bg-dev-bg-300/40 transition-colors">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
+                <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
+                  styles
+                </span>
+              </td>
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
+                <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
+                  string
+                </span>
+              </td>
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
+                <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
+                  undefined
+                </span>
+              </td>
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
+                Custom raw CSS string injected directly into the DevTools Shadow DOM container.
+                <div className="text-dev-text-bright mt-2 text-xs font-semibold">Example:</div>
+                <pre className="border-dev-border bg-dev-bg-300 text-dev-text-bright mt-1 rounded-md border p-2 font-mono text-[10px] break-all whitespace-pre-wrap sm:p-2.5 sm:text-[11px]">
+                  {`styles=".devtools-badge { border-radius: 4px; }"`}
+                </pre>
+              </td>
+            </tr>
+
+            <tr className="hover:bg-dev-bg-300/40 transition-colors">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   initialTab
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   DevToolsTabId
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-status-info-border bg-status-info-bg text-status-info-text inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2 sm:text-xs">
                   &apos;console&apos;
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Active tab on open (
                 <code className="text-dev-text-bright">&apos;console&apos;</code>,{' '}
                 <code className="text-dev-text-bright">&apos;elements&apos;</code>,{' '}
@@ -268,44 +289,44 @@ export const ApiTable: React.FC = () => {
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   enabledTabs
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   DevToolsTabId[]
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   All 5 tabs
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 List of built-in tabs to render. Allows hiding specific tabs (e.g. only enable
                 console &amp; network).
               </td>
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   theme
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   DevToolsTheme
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   {`{ mode: 'dark' }`}
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Theme configuration (
                 <code className="text-dev-text-bright">
                   mode: &apos;dark&apos; | &apos;light&apos; | &apos;auto&apos;
@@ -318,22 +339,22 @@ export const ApiTable: React.FC = () => {
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   interceptors
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   InterceptorConfig
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   Object
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 <div>Configure console log and network request interception:</div>
                 <pre className="border-dev-border bg-dev-bg-300 text-dev-text-bright mt-2 rounded-md border p-2 font-mono text-[10px] break-all whitespace-pre-wrap sm:p-2.5 sm:text-[11px]">
                   {`{
@@ -349,22 +370,22 @@ export const ApiTable: React.FC = () => {
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   privacy
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   PrivacyConfig
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   undefined
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 <div>
                   Recursively masks matching sensitive keys (e.g.{' '}
                   <code className="text-dev-text-bright">password</code>,{' '}
@@ -382,22 +403,22 @@ export const ApiTable: React.FC = () => {
             </tr>
 
             <tr className="hover:bg-dev-bg-300/40 transition-colors">
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-bright inline-block max-w-full rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold break-all sm:px-2.5 sm:py-1 sm:text-xs">
                   customTabs
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-status-warn-text inline-block max-w-full rounded border px-1.5 py-0.5 font-mono text-[11px] break-all sm:px-2 sm:text-xs">
                   CustomTabDefinition[]
                 </span>
               </td>
-              <td className="p-2.5 align-top break-words sm:p-4">
+              <td className="p-2.5 align-top wrap-break-word sm:p-4">
                 <span className="border-dev-border bg-dev-bg-300 text-dev-text-muted inline-block rounded border px-1.5 py-0.5 font-mono text-[11px] sm:px-2 sm:text-xs">
                   []
                 </span>
               </td>
-              <td className="text-dev-text-main p-2.5 align-top leading-relaxed break-words sm:p-4">
+              <td className="text-dev-text-main p-2.5 align-top leading-relaxed wrap-break-word sm:p-4">
                 Pluggable consumer tabs with custom DOM rendering callback (
                 <code className="text-dev-text-bright">render(container)</code>).
                 <div className="text-dev-text-bright mt-2 text-xs font-semibold">Example:</div>

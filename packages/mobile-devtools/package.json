@@ -1,6 +1,6 @@
 {
   "name": "mobile-devtools",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications",
   "license": "MIT",
   "type": "module",

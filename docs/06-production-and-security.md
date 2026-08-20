@@ -6,7 +6,7 @@
 
 ## 🛡️ 1. Production Bundle Tree-Shaking (Zero-Leak Pattern)
 
-While `mobile-devtools` has an extremely small footprint (~2.0 kB gzipped), best practices dictate that debugging tools should never be included in production client bundles unless specifically required for QA/Staging environments.
+While `mobile-devtools` has an extremely small footprint (~32.2 kB gzipped / ~135.9 kB minified), best practices dictate that debugging tools should never be included in production client bundles unless specifically required for QA/Staging environments.
 
 ### A. Dynamic Import Pattern (React / Next.js / Vite)
 

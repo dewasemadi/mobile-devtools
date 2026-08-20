@@ -14,6 +14,7 @@ export interface DevToolsConfig {
   shakeToToggle?: boolean;
   shakeThreshold?: number;
   showBadge?: boolean;
+  renderBadge?: (container: HTMLElement, props: BadgeRenderProps) => void;
   title?: string;
   icon?: any;
   position?: BadgePosition | BadgePositionPreset;
@@ -21,7 +22,7 @@ export interface DevToolsConfig {
   enabledTabs?: DevToolsTabId[];
   customTabs?: CustomTabDefinition[];
   theme?: DevToolsTheme;
-  styles?: DevToolsStyles;
+  styles?: string;
   privacy?: PrivacyConfig;
   interceptors?: InterceptorConfig;
   autoSnapBadge?: boolean;
@@ -43,13 +44,30 @@ export interface DevToolsConfig {
 | `initialTab`     | `DevToolsTabId`                        | `'console'`                                               | Default active tab when drawer opens (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`).                                                                |
 | `enabledTabs`    | `DevToolsTabId[]`                      | `['console', 'elements', 'network', 'storage', 'system']` | Array of tab IDs to enable in drawer bar.                                                                                                                              |
 | `customTabs`     | `CustomTabDefinition[]`                | `[]`                                                      | Pluggable custom consumer tabs array with DOM rendering callbacks.                                                                                                     |
-| `styles`         | `DevToolsStyles`                       | `undefined`                                               | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`).                                                                 |
+| `styles`         | `string`                               | `undefined`                                               | Custom raw CSS string injected into DevTools Shadow DOM root.                                                                           |
 | `defaultOpen`    | `boolean`                              | `false`                                                   | Set to `true` to automatically open the drawer overlay when mounted.                                                                                                   |
 | `shakeToToggle`  | `boolean`                              | `true`                                                    | Enable physical device shake motion gesture to toggle DevTools drawer.                                                                                                 |
 | `shakeThreshold` | `number`                               | `12`                                                      | Acceleration threshold required to trigger device shake toggle.                                                                                                        |
 | `showBadge`      | `boolean`                              | `true`                                                    | Show or hide the floating badge trigger button on screen.                                                                                                              |
+| `renderBadge`    | `(container, props) => void`           | `undefined`                                               | Custom render callback to craft inner floating badge DOM structure while retaining drag & drop gesture handling.                                                        |
 | `autoSnapBadge`  | `boolean`                              | `false`                                                   | Enable magnetic snapping of badge to nearest screen edge on drag release.                                                                                              |
 | `container`      | `HTMLElement \| null`                  | `null`                                                    | Target parent element for Shadow DOM host insertion (defaults to `document.body`).                                                                                     |
+
+---
+
+## 🏷️ `BadgeRenderProps` Interface
+
+```ts
+export interface BadgeRenderProps {
+  unreadErrors: number;
+  unreadWarnings: number;
+  unreadTotal: number;
+  isOpen: boolean;
+  toggle: () => void;
+  open: () => void;
+  close: () => void;
+}
+```
 
 ---
 
@@ -69,19 +87,6 @@ export interface DevToolsTheme {
   warningColor?: string;
   successColor?: string;
   fontFamily?: string;
-}
-```
-
----
-
-## 🎨 `DevToolsStyles` Interface
-
-```ts
-export interface DevToolsStyles {
-  badge?: Record<string, string>;
-  drawer?: Record<string, string>;
-  overlay?: Record<string, string>;
-  handle?: Record<string, string>;
 }
 ```
 

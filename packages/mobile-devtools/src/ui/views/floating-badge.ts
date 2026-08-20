@@ -74,13 +74,21 @@ export class FloatingBadgeView {
     }
     this.badgeElement.style.borderColor = borderColor;
 
-    // Custom badge styling from config.styles?.badge
-    const customBadgeStyles = config.styles?.badge;
-    if (customBadgeStyles) {
-      Object.assign(this.badgeElement.style, customBadgeStyles);
+    // Custom Render Badge Callback
+    if (typeof config.renderBadge === 'function') {
+      config.renderBadge(this.badgeElement, {
+        unreadErrors: unread.errors,
+        unreadWarnings: unread.warnings,
+        unreadTotal: unread.total,
+        isOpen: this.store.getIsOpen(),
+        toggle: () => this.store.toggleOpen(),
+        open: () => this.store.setIsOpen(true),
+        close: () => this.store.setIsOpen(false),
+      });
+      return;
     }
 
-    // HTML Content
+    // Default HTML Content
     let dotHtml = '';
     if (config.icon) {
       if (
