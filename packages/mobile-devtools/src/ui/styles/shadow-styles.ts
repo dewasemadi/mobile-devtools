@@ -215,6 +215,12 @@ export const SHADOW_STYLES = `
   transform: scale(1.05);
 }
 
+.devtools-badge * {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 .devtools-badge-dot {
   width: 8px;
   height: 8px;

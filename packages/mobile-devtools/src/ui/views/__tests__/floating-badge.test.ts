@@ -31,22 +31,41 @@ describe('FloatingBadgeView', () => {
     expect(store.getIsOpen()).toBe(true);
   });
 
-  it('should apply custom styles from styles.badge config', () => {
-    store.updateConfig({
-      styles: {
-        badge: {
-          opacity: '0.8',
-        },
-      },
-    });
-
-    const el = badgeView.render();
-    expect(el.style.opacity).toBe('0.8');
-  });
-
   it('should hide badge element when showBadge is false', () => {
     store.updateConfig({ showBadge: false });
     const el = badgeView.render();
     expect(el.style.display).toBe('none');
+  });
+
+  it('should support custom renderBadge callback while preserving container drag listeners', () => {
+    let renderCalled = false;
+    let receivedUnread = -1;
+
+    store.updateConfig({
+      renderBadge: (container, props) => {
+        renderCalled = true;
+        receivedUnread = props.unreadErrors;
+        container.innerHTML = '<span class="my-custom-badge">Custom Badge</span>';
+      },
+    });
+
+    const el = badgeView.render();
+    expect(renderCalled).toBe(true);
+    expect(receivedUnread).toBe(0);
+    expect(el.innerHTML).toContain('my-custom-badge');
+
+    // Verify pointer drag gestures still work on container
+    const downEvt = new Event('pointerdown', { bubbles: true });
+    (downEvt as any).clientX = 50;
+    (downEvt as any).clientY = 50;
+    el.dispatchEvent(downEvt);
+
+    const moveEvt = new Event('pointermove', { bubbles: true });
+    (moveEvt as any).clientX = 100;
+    (moveEvt as any).clientY = 100;
+    el.dispatchEvent(moveEvt);
+
+    expect(el.style.left).not.toBe('');
+    expect(el.style.top).not.toBe('');
   });
 });

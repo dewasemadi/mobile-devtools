@@ -192,14 +192,6 @@ export class DrawerView {
     const unread = this.store.getUnreadCounts();
     const config = this.store.getConfig();
 
-    // Custom styles from config.styles
-    if (config.styles?.overlay) {
-      Object.assign(this.overlayElement.style, config.styles.overlay);
-    }
-    if (config.styles?.drawer) {
-      Object.assign(this.drawerElement.style, config.styles.drawer);
-    }
-
     // Overlay Open State
     if (isOpen) {
       this.overlayElement.classList.add('open');

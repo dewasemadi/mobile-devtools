@@ -5,6 +5,24 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-08-20
+
+### 🎨 Custom Raw CSS Injection & Pluggable `renderBadge` Crafting
+
+#### Added
+
+- **Pluggable `renderBadge` Custom Callback**: Added `renderBadge?: (container: HTMLElement, props: BadgeRenderProps) => void` configuration option. Consumers can now completely craft their own inner HTML/DOM structure for the floating badge.
+- **`BadgeRenderProps` Helper API**: Provided `unreadErrors`, `unreadWarnings`, `unreadTotal`, `isOpen`, `toggle()`, `open()`, and `close()` helper methods directly to `renderBadge` callback.
+- **Drag-and-Drop & Snapping Preservation**: `renderBadge` custom DOM renders inside `.devtools-badge` container, preserving 100% of pointer drag gestures, viewport bounds clamping, and magnetic edge snapping (`autoSnapBadge`).
+
+#### Fixed & Improved
+
+- **Custom Raw CSS Injection**: Replaced legacy `DevToolsStyles` object with `styles?: string`, allowing consumers to inject raw CSS strings directly into Shadow DOM root targeting `.devtools-badge`, `:hover`, `.devtools-tab-btn.active`, etc.
+- **Native Browser Image Drag Prevention**: Applied `pointer-events: none`, `-webkit-user-drag: none`, and `user-select: none` to image elements inside `.devtools-badge` to prevent native browser image drag interference during touch drag gestures.
+- **Documentation & Web App API Table**: Synchronized all guides, README files, and live web portal API Reference table with the new `styles?: string` and `renderBadge` specifications.
+
+---
+
 ## [1.5.2] - 2026-08-19
 
 ### 🎨 Theme Persistence, Input Touch Navigation & Elements UI Polish

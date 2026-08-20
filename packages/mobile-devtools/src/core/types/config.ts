@@ -124,17 +124,23 @@ export interface PrivacyConfig {
 }
 
 /**
- * Custom CSS style overrides for DevTools DOM elements.
+ * Render properties passed to the custom renderBadge callback function.
  */
-export interface DevToolsStyles {
-  /** Style overrides for the floating trigger badge */
-  badge?: Record<string, string>;
-  /** Style overrides for the main drawer panel */
-  drawer?: Record<string, string>;
-  /** Style overrides for the backdrop overlay */
-  overlay?: Record<string, string>;
-  /** Style overrides for drag handle elements */
-  handle?: Record<string, string>;
+export interface BadgeRenderProps {
+  /** Unread error logs & network errors count */
+  unreadErrors: number;
+  /** Unread warning logs count */
+  unreadWarnings: number;
+  /** Total unread items count */
+  unreadTotal: number;
+  /** Current drawer open state */
+  isOpen: boolean;
+  /** Toggle DevTools drawer open/closed */
+  toggle: () => void;
+  /** Open DevTools drawer */
+  open: () => void;
+  /** Close DevTools drawer */
+  close: () => void;
 }
 
 /**
@@ -151,6 +157,11 @@ export interface DevToolsConfig {
    * @default false
    */
   forceEnable?: boolean;
+  /**
+   * Custom render callback function to craft inner floating badge DOM structure.
+   * Drag-and-drop & viewport snapping remain active on the outer container!
+   */
+  renderBadge?: (container: HTMLElement, props: BadgeRenderProps) => void;
   /**
    * Open DevTools drawer immediately upon mounting.
    * @default false
@@ -203,9 +214,10 @@ export interface DevToolsConfig {
    */
   position?: BadgePosition | BadgePositionPreset;
   /**
-   * Custom CSS style overrides for DevTools overlay elements.
+   * Custom raw CSS string injected into DevTools Shadow DOM container.
+   * @example ".devtools-badge { border-radius: 4px; } .devtools-tab-btn.active { background: #6366f1; }"
    */
-  styles?: DevToolsStyles;
+  styles?: string;
   /**
    * Title text displayed in the DevTools drawer header.
    * @default 'DevTools'
