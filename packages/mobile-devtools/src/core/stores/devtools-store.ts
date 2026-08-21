@@ -12,6 +12,7 @@ import { LogEntry } from '../types/log';
 import { NetworkRequestEntry, NetworkThrottlingProfile } from '../types/network';
 import { DragPosition, getDefaultPosition } from '../utils/drag-helper';
 import { isBrowser, isServer } from '../utils/env';
+import { safeJsonParse } from '../utils/json';
 
 export type StoreListener = () => void;
 
@@ -65,9 +66,9 @@ export class DevToolsStore {
     try {
       const savedPos = localStorage.getItem(STORAGE_KEYS.POSITION);
       if (savedPos) {
-        const parsed = JSON.parse(savedPos);
-        if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
-          this.badgePosition = parsed;
+        const parsed = safeJsonParse<{ x?: number; y?: number }, null>(savedPos, null);
+        if (parsed && typeof parsed.x === 'number' && typeof parsed.y === 'number') {
+          this.badgePosition = { x: parsed.x, y: parsed.y };
         }
       } else if (this.config.position) {
         this.badgePosition = getDefaultPosition(this.config.position);

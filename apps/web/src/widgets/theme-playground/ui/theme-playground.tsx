@@ -1,6 +1,4 @@
 /* eslint-disable react/prop-types */
-'use client';
-
 import React, { useState, useRef } from 'react';
 import { Sliders, Copy, Check, Upload, RotateCcw } from 'lucide-react';
 import { MobileDevTools } from 'mobile-devtools/react';

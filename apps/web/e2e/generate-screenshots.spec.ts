@@ -218,14 +218,28 @@ test.describe('Automated Documentation Screenshots (Mobile Light Mode)', () => {
     await page.waitForTimeout(300);
     await saveScreenshotToBothDirs(page, '03-network-light.png');
 
-    // 9. Capture Storage Tab: 04-storage-light.png
+    // 9. Capture Network Request Detail Modal: 04-network-detail-light.png (GET 200 Success Request)
+    const networkRow = page.locator('.devtools-network-row', { hasText: 'users/1' }).first();
+    if (await networkRow.isVisible()) {
+      await networkRow.click();
+      await page.waitForTimeout(300);
+      await saveScreenshotToBothDirs(page, '04-network-detail-light.png');
+
+      const backBtn = page.locator('button[title="Back to request list"]');
+      if (await backBtn.isVisible()) {
+        await backBtn.click();
+        await page.waitForTimeout(300);
+      }
+    }
+
+    // 10. Capture Storage Tab: 05-storage-light.png
     await page.locator('.devtools-tab-btn', { hasText: 'Storage' }).click();
     await page.waitForTimeout(300);
-    await saveScreenshotToBothDirs(page, '04-storage-light.png');
+    await saveScreenshotToBothDirs(page, '05-storage-light.png');
 
-    // 10. Capture System Tab: 05-system-light.png
+    // 11. Capture System Tab: 06-system-light.png
     await page.locator('.devtools-tab-btn', { hasText: 'System' }).click();
     await page.waitForTimeout(300);
-    await saveScreenshotToBothDirs(page, '05-system-light.png');
+    await saveScreenshotToBothDirs(page, '06-system-light.png');
   });
 });

@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Navbar } from '@/widgets/navbar/ui/navbar';
 import { HeroSection } from '@/widgets/hero/ui/hero-section';

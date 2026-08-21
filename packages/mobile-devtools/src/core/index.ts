@@ -29,3 +29,5 @@ export * from './utils/privacy';
 export * from './utils/clipboard';
 export * from './utils/shake-detector';
 export * from './utils/id';
+export * from './utils/json';
+

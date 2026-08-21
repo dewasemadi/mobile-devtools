@@ -1,5 +1,6 @@
 {
   "name": "mobile-devtools",
+  "author": "I Dewa Putu Semadi",
   "private": true,
   "scripts": {
     "build": "turbo run build",

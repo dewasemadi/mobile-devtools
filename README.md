@@ -41,8 +41,9 @@
   <img src="docs/assets/03-network-light.png" width="31%" alt="Network Tab" />
 </p>
 <p align="center">
-  <img src="docs/assets/04-storage-light.png" width="31%" alt="Storage Tab" />
-  <img src="docs/assets/05-system-light.png" width="31%" alt="System Tab" />
+  <img src="docs/assets/04-network-detail-light.png" width="31%" alt="Network Detail" />
+  <img src="docs/assets/05-storage-light.png" width="31%" alt="Storage Tab" />
+  <img src="docs/assets/06-system-light.png" width="31%" alt="System Tab" />
 </p>
 
 ---
