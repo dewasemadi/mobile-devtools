@@ -23,6 +23,7 @@ import { renderJsonTree } from '../../components/json-tree';
 import { ARROW_DOWN_ICON, ARROW_UP_ICON, BACK_ICON, CHECK_ICON, TRASH_ICON } from '../../icons';
 import { highlightJsonSyntax } from '../../utils/json-highlighter';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
+import { createSearchInput } from '../../components/search-input';
 
 export class NetworkTabView {
   private store: DevToolsStore;
@@ -67,26 +68,22 @@ export class NetworkTabView {
     toolbar.style.gap = '6px';
 
     const row1 = document.createElement('div');
-    row1.style.display = 'flex';
-    row1.style.alignItems = 'center';
-    row1.style.gap = '6px';
-    row1.style.width = '100%';
+    row1.className = 'devtools-toolbar-row';
 
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.className = 'devtools-search-input';
-    searchInput.placeholder = 'Filter URL or Status...';
-    searchInput.value = this.searchValue;
-    searchInput.style.flex = '1';
-    searchInput.style.minWidth = '0';
-    searchInput.addEventListener('input', (e) => {
-      this.searchValue = (e.target as HTMLInputElement).value;
-      this.updateList();
+    const { container: searchWrapper } = createSearchInput({
+      placeholder: 'Filter URL or Status...',
+      value: this.searchValue,
+      ariaLabel: 'Filter network requests by URL or Status',
+      onInput: (val) => {
+        this.searchValue = val;
+        this.updateList();
+      },
     });
 
     this.clearBtn = document.createElement('button');
     this.clearBtn.className = 'devtools-btn devtools-btn-danger devtools-btn-icon-only';
     this.clearBtn.title = 'Clear Network Requests';
+    this.clearBtn.setAttribute('aria-label', 'Clear Network Requests');
     this.clearBtn.innerHTML = TRASH_ICON;
     this.clearBtn.addEventListener('click', () => {
       if (
@@ -100,14 +97,11 @@ export class NetworkTabView {
       }
     });
 
-    row1.appendChild(searchInput);
+    row1.appendChild(searchWrapper);
     row1.appendChild(this.clearBtn);
 
     const row2 = document.createElement('div');
-    row2.style.display = 'flex';
-    row2.style.alignItems = 'center';
-    row2.style.gap = '6px';
-    row2.style.width = '100%';
+    row2.className = 'devtools-toolbar-row';
     row2.style.overflowX = 'auto';
     setupScrollLockGuard(row2);
 
@@ -415,7 +409,8 @@ export class NetworkTabView {
 
     const copyFullReqBtn = document.createElement('button');
     copyFullReqBtn.className = 'devtools-btn sm';
-    copyFullReqBtn.textContent = 'Copy Request';
+    copyFullReqBtn.textContent = 'Summary';
+    copyFullReqBtn.title = 'Copy full HTTP request details & response summary';
     copyFullReqBtn.addEventListener('click', async () => {
       const text = generateFullRequestSummary(req);
       const ok = await copyToClipboard(text);
@@ -423,7 +418,7 @@ export class NetworkTabView {
         ? `<span style="display:inline-flex;align-items:center;gap:4px">${CHECK_ICON} Copied</span>`
         : 'Failed';
       setTimeout(() => {
-        copyFullReqBtn.textContent = 'Copy Request';
+        copyFullReqBtn.textContent = 'Summary';
       }, 2000);
     });
 
@@ -512,7 +507,7 @@ export class NetworkTabView {
       tabsBar.appendChild(framesBtn);
     }
 
-    // Left-aligned Parsed / Raw segmented control & Copy Request button inline
+    // Left-aligned Parsed / Raw segmented control & Summary button inline
     if (
       this.activeDetailTab === NETWORK_DETAIL_TABS.RESPONSE ||
       this.activeDetailTab === NETWORK_DETAIL_TABS.PAYLOAD

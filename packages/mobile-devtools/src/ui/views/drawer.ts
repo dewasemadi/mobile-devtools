@@ -47,6 +47,9 @@ export class DrawerView {
 
     this.drawerElement = document.createElement('div');
     this.drawerElement.className = DEVTOOLS_CLASSNAMES.DRAWER;
+    this.drawerElement.setAttribute('role', 'dialog');
+    this.drawerElement.setAttribute('aria-modal', 'true');
+    this.drawerElement.setAttribute('aria-label', 'Mobile DevTools Overlay');
 
     this.tabContentContainer = document.createElement('div');
     this.tabContentContainer.style.flex = '1';
@@ -97,6 +100,12 @@ export class DrawerView {
     this.store.setIsOpen(false);
   }
 
+  private handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && this.store.getIsOpen()) {
+      this.handleClose();
+    }
+  };
+
   private lockBodyScroll() {
     if (this.isBodyLocked || typeof document === 'undefined') return;
     this.originalBodyOverflow = document.body.style.overflow;
@@ -104,6 +113,7 @@ export class DrawerView {
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
     this.isBodyLocked = true;
+    window.addEventListener('keydown', this.handleKeyDown);
   }
 
   private unlockBodyScroll() {
@@ -113,6 +123,7 @@ export class DrawerView {
     this.originalBodyOverflow = null;
     this.originalDocOverflow = null;
     this.isBodyLocked = false;
+    window.removeEventListener('keydown', this.handleKeyDown);
   }
 
   private attachSwipeListeners(element: HTMLElement) {
@@ -252,7 +263,9 @@ export class DrawerView {
 
     const themeToggleBtn = document.createElement('button');
     themeToggleBtn.className = 'devtools-icon-btn';
-    themeToggleBtn.title = `Switch to ${themeMode === THEME_MODES.DARK ? 'Light' : 'Dark'} Mode`;
+    const themeLabel = `Switch to ${themeMode === THEME_MODES.DARK ? 'Light' : 'Dark'} Mode`;
+    themeToggleBtn.title = themeLabel;
+    themeToggleBtn.setAttribute('aria-label', themeLabel);
     themeToggleBtn.innerHTML = themeMode === THEME_MODES.DARK ? SUN_ICON : MOON_ICON;
 
     themeToggleBtn.addEventListener('click', () => {
@@ -262,6 +275,7 @@ export class DrawerView {
     const closeBtn = document.createElement('button');
     closeBtn.className = 'devtools-icon-btn devtools-close-btn';
     closeBtn.title = 'Close DevTools Overlay';
+    closeBtn.setAttribute('aria-label', 'Close Mobile DevTools Overlay');
     closeBtn.innerHTML = CLOSE_ICON;
     closeBtn.addEventListener('click', () => {
       this.handleClose();
@@ -270,6 +284,7 @@ export class DrawerView {
     const shareBtn = document.createElement('button');
     shareBtn.className = 'devtools-icon-btn';
     shareBtn.title = 'Export Bug Report (Share / Download Logs)';
+    shareBtn.setAttribute('aria-label', 'Export Bug Report');
     shareBtn.innerHTML = SHARE_ICON;
 
     shareBtn.addEventListener('click', async () => {
@@ -296,6 +311,8 @@ export class DrawerView {
     const prevTabsScrollLeft = this.tabsScrollLeft;
     const tabsBar = document.createElement('div');
     tabsBar.className = 'devtools-tabs-bar';
+    tabsBar.setAttribute('role', 'tablist');
+    tabsBar.setAttribute('aria-label', 'DevTools Navigation Tabs');
     setupScrollLockGuard(tabsBar);
 
     tabsBar.addEventListener('scroll', () => {
@@ -315,6 +332,9 @@ export class DrawerView {
       const tabBtn = document.createElement('button');
       tabBtn.className = `devtools-tab-btn ${activeTab === tabId ? 'active' : ''}`;
       tabBtn.textContent = tabId.charAt(0).toUpperCase() + tabId.slice(1);
+      tabBtn.setAttribute('role', 'tab');
+      tabBtn.setAttribute('aria-selected', activeTab === tabId ? 'true' : 'false');
+      tabBtn.setAttribute('id', `devtools-tab-${tabId}`);
       tabBtn.addEventListener('click', () => {
         this.store.setActiveTab(tabId);
       });
@@ -325,6 +345,9 @@ export class DrawerView {
       const tabBtn = document.createElement('button');
       tabBtn.className = `devtools-tab-btn ${activeTab === ct.id ? 'active' : ''}`;
       tabBtn.textContent = ct.title;
+      tabBtn.setAttribute('role', 'tab');
+      tabBtn.setAttribute('aria-selected', activeTab === ct.id ? 'true' : 'false');
+      tabBtn.setAttribute('id', `devtools-tab-${ct.id}`);
       tabBtn.addEventListener('click', () => {
         this.store.setActiveTab(ct.id as any);
       });
@@ -333,6 +356,8 @@ export class DrawerView {
 
     // Mount Active Tab Content
     this.tabContentContainer.innerHTML = '';
+    this.tabContentContainer.setAttribute('role', 'tabpanel');
+    this.tabContentContainer.setAttribute('aria-labelledby', `devtools-tab-${activeTab}`);
     if (activeTab === BUILTIN_TABS.CONSOLE) {
       this.tabContentContainer.appendChild(this.consoleTab.render());
     } else if (activeTab === BUILTIN_TABS.ELEMENTS) {
@@ -367,6 +392,7 @@ export class DrawerView {
 
   public destroy() {
     this.unlockBodyScroll();
+    window.removeEventListener('keydown', this.handleKeyDown);
     if (this.unsubscribeStore) {
       this.unsubscribeStore();
       this.unsubscribeStore = null;

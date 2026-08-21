@@ -14,6 +14,7 @@ import {
   TRASH_ICON,
 } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
+import { createSearchInput } from '../../components/search-input';
 
 export class ElementsTabView {
   private store: DevToolsStore;
@@ -101,24 +102,22 @@ export class ElementsTabView {
     });
 
     // Filter / Search Input
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.className = 'devtools-search-input';
-    searchInput.placeholder =
-      this.activeSubTab === ELEMENTS_SUB_TABS.STYLES
-        ? 'Filter CSS styles...'
-        : 'Filter elements...';
-    searchInput.value = this.searchValue;
-    searchInput.style.flex = '1';
-    searchInput.style.minWidth = '0';
-    searchInput.addEventListener('input', (e) => {
-      this.searchValue = (e.target as HTMLInputElement).value;
-      this.updateView();
+    const { container: searchWrapper } = createSearchInput({
+      placeholder:
+        this.activeSubTab === ELEMENTS_SUB_TABS.STYLES
+          ? 'Filter CSS styles...'
+          : 'Filter elements...',
+      value: this.searchValue,
+      ariaLabel: 'Filter elements or CSS styles',
+      onInput: (val) => {
+        this.searchValue = val;
+        this.updateView();
+      },
     });
 
     row1.appendChild(inspectBtn);
     row1.appendChild(refreshBtn);
-    row1.appendChild(searchInput);
+    row1.appendChild(searchWrapper);
 
     // Sub-tab Segmented Controller (Full width in row 2)
     const subTabGroup = document.createElement('div');
@@ -240,15 +239,46 @@ export class ElementsTabView {
     container.appendChild(treeWrapper);
   }
 
+  private doesNodeMatchSearch(el: HTMLElement, query: string): boolean {
+    if (!query) return true;
+    const q = query.toLowerCase();
+    const tag = el.tagName.toLowerCase();
+    if (tag.includes(q)) return true;
+    if (el.id && el.id.toLowerCase().includes(q)) return true;
+    if (typeof el.className === 'string' && el.className.toLowerCase().includes(q)) return true;
+    if (el.textContent && el.textContent.toLowerCase().includes(q)) return true;
+    for (let i = 0; i < el.attributes.length; i++) {
+      const attr = el.attributes[i];
+      if (attr.name.toLowerCase().includes(q) || attr.value.toLowerCase().includes(q)) return true;
+    }
+    return false;
+  }
+
+  private hasMatchingDescendant(el: HTMLElement, query: string): boolean {
+    if (this.doesNodeMatchSearch(el, query)) return true;
+    for (let i = 0; i < el.children.length; i++) {
+      const child = el.children[i];
+      if (child instanceof HTMLElement && this.hasMatchingDescendant(child, query)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private renderDomNode(
     parentContainer: HTMLElement,
     el: HTMLElement,
     depth: number,
     selectedEl: HTMLElement
   ) {
+    const query = this.searchValue.trim();
+    if (query && !this.hasMatchingDescendant(el, query)) {
+      return;
+    }
+
     const summary = this.elementsManager.getDomNodeSummary(el);
     const isSelected = el === selectedEl;
-    const isExpanded = this.expandedNodes.has(el);
+    const isExpanded = query ? true : this.expandedNodes.has(el);
 
     const nodeRow = document.createElement('div');
     nodeRow.className = `devtools-dom-node ${isSelected ? 'selected' : ''}`;
@@ -373,9 +403,7 @@ export class ElementsTabView {
 
     // Grouped Computed CSS Styles List
     const stylesTitleRow = document.createElement('div');
-    stylesTitleRow.className = 'devtools-toolbar';
-    stylesTitleRow.style.padding = '4px 0';
-    stylesTitleRow.style.borderBottom = 'none';
+    stylesTitleRow.className = 'devtools-section-header';
 
     const stylesTitle = document.createElement('div');
     stylesTitle.className = 'devtools-section-title';
@@ -461,10 +489,7 @@ export class ElementsTabView {
     const summary = this.elementsManager.getDomNodeSummary(el);
 
     const titleRow = document.createElement('div');
-    titleRow.className = 'devtools-toolbar';
-    titleRow.style.padding = '6px 0';
-    titleRow.style.justifyContent = 'space-between';
-    titleRow.style.alignItems = 'center';
+    titleRow.className = 'devtools-section-header';
 
     const title = document.createElement('div');
     title.className = 'devtools-section-title';
@@ -474,6 +499,7 @@ export class ElementsTabView {
     const addAttrBtn = document.createElement('button');
     addAttrBtn.className = 'devtools-btn devtools-btn-icon-only';
     addAttrBtn.title = 'Add attribute';
+    addAttrBtn.setAttribute('aria-label', 'Add attribute');
     addAttrBtn.innerHTML = PLUS_ICON;
     addAttrBtn.addEventListener('click', () => {
       const name = prompt('Attribute name (e.g. class, style, data-test):');
@@ -491,13 +517,23 @@ export class ElementsTabView {
     const attrsList = document.createElement('div');
     attrsList.className = 'devtools-attrs-list';
 
-    if (summary.attributes.length === 0) {
+    let attributes = summary.attributes;
+    if (this.searchValue.trim()) {
+      const q = this.searchValue.trim().toLowerCase();
+      attributes = attributes.filter(
+        (a) => a.name.toLowerCase().includes(q) || a.value.toLowerCase().includes(q)
+      );
+    }
+
+    if (attributes.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'devtools-empty';
-      empty.textContent = 'No attributes on this element';
+      empty.textContent = this.searchValue.trim()
+        ? `No attributes matching "${this.searchValue}"`
+        : 'No attributes on this element';
       attrsList.appendChild(empty);
     } else {
-      summary.attributes.forEach(({ name, value }) => {
+      attributes.forEach(({ name, value }) => {
         const row = document.createElement('div');
         row.className = 'devtools-attr-row';
 

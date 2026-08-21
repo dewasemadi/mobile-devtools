@@ -3,6 +3,7 @@ import { DevToolsStore } from '../stores/devtools-store';
 import { NetworkRequestEntry } from '../types/network';
 import { isServer } from '../utils/env';
 import { generateId } from '../utils/id';
+import { safeJsonParse } from '../utils/json';
 import { maskSensitiveValue } from '../utils/privacy';
 
 export class NetworkInterceptor {
@@ -64,12 +65,7 @@ export class NetworkInterceptor {
         }
       }
 
-      let requestBody: any = init?.body;
-      if (typeof requestBody === 'string') {
-        try {
-          requestBody = JSON.parse(requestBody);
-        } catch {}
-      }
+      const requestBody = safeJsonParse(init?.body);
 
       const maskKeys = this.store.getMaskKeys();
       const maskedReqHeaders = maskSensitiveValue(reqHeaders, '', maskKeys);
@@ -133,11 +129,7 @@ export class NetworkInterceptor {
             responseBody = await clone.json();
           } else {
             const text = await clone.text();
-            try {
-              responseBody = JSON.parse(text);
-            } catch {
-              responseBody = text.substring(0, 5000);
-            }
+            responseBody = safeJsonParse(text, text.substring(0, 5000));
           }
         } catch {
           responseBody = '[Unable to parse response body]';
@@ -203,12 +195,7 @@ export class NetworkInterceptor {
       const url = (this as any).__devToolsUrl || '';
       const reqHeaders = (this as any).__devToolsReqHeaders || {};
 
-      let requestBody = body;
-      if (typeof body === 'string') {
-        try {
-          requestBody = JSON.parse(body);
-        } catch {}
-      }
+      const requestBody = safeJsonParse(body);
 
       if (id) {
         self.store.addNetworkRequest({
@@ -243,11 +230,7 @@ export class NetworkInterceptor {
             let responseBody: any = null;
             try {
               if (this.responseType === '' || this.responseType === 'text') {
-                try {
-                  responseBody = JSON.parse(this.responseText);
-                } catch {
-                  responseBody = this.responseText;
-                }
+                responseBody = safeJsonParse(this.responseText);
               } else if (this.responseType === 'json') {
                 responseBody = this.response;
               } else {

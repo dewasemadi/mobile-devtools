@@ -5,6 +5,41 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1] - 2026-08-21
+
+### ♿ Accessibility, Search Clear Icon, Dynamic Theming & UX Refinements
+
+#### Added
+
+- **Search Input Clear Button (`[x]`)**: Added a reusable `createSearchInput` component with a clean, transparent `×` clear icon. Tapping `×` immediately resets input values, updates filtered lists, and maintains input focus. Integrated across Console, Network, Storage, and Elements tabs with 100% unit test coverage (`search-input.test.ts`).
+- **Dynamic Accent Color Alpha (`color-mix`)**: Replaced static hardcoded RGBA values with CSS `color-mix(in srgb, var(--dev-accent) N%, transparent)`. Focus ring outlines (35% opacity) and active selection states (15% opacity) now dynamically adapt to any custom `--dev-accent` color configured by consumers.
+- **Manifest Author Metadata**: Added `"author": "I Dewa Putu Semadi"` to package manifests.
+
+#### Fixed & Improved
+
+- **WAI-ARIA & Keyboard Navigation (A11y)**:
+  - Added `:focus-visible` & `:focus` ring indicators across interactive buttons, tabs, inputs, and select controls.
+  - Added `aria-label` attributes to icon buttons in Console, Network, and Storage tabs.
+  - Added `role="dialog"`, `aria-modal="true"`, and `Escape` key close listener to the drawer overlay.
+  - Added `role="button"` and `Enter` / `Space` keyboard triggers to the floating badge.
+- **DOM Tree & Attributes Filtering (Elements Tab)**:
+  - Fixed DOM Tree filtering: searching tag names, IDs (`#app`), classes (`.btn`), text content, or attributes now dynamically filters nodes and automatically expands parent nodes.
+  - Fixed Attributes view filtering for element attribute names and values.
+  - Repositioned `Attributes (<body>)` section header to align title on the left and `[ + ]` button on the right (`.devtools-section-header`).
+  - Increased Inspect Element icon size to `20px` for enhanced touch clarity.
+- **Storage Table Layout & Overflow**:
+  - Applied `table-layout: fixed` and `word-break: break-all` / `overflow-wrap: anywhere` to `.devtools-table`.
+  - Resolved an issue where long storage keys (e.g. `cache:https://...`) expanded the key column and pushed Value and Action columns off-screen.
+- **Network Tab Detail Action Button**:
+  - Updated action button label from `Copy Request` to **`Summary`** (`[ cURL ]` & `[ Summary ]` -> `[ ✓ Copied ]`).
+- **Focus Ring & Select Dropdown Layout**:
+  - Combined `outline: none` with rounded `box-shadow` rings to eliminate rectangular outline cut-offs on `border-radius: 6px` controls.
+  - Introduced `.devtools-toolbar-row` negative margin offsets to align search inputs, action buttons, and select dropdowns to exact pixel boundaries without clipping focus rings.
+- **Documentation & Screenshots**:
+  - Updated README Showcase galleries to display 6 symmetric high-DPI iOS Safari screenshots (`01-console-light.png` through `06-system-light.png`).
+
+---
+
 ## [1.6.0] - 2026-08-20
 
 ### 🎨 Custom Raw CSS Injection & Pluggable `renderBadge` Crafting

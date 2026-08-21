@@ -1,3 +1,5 @@
+import { safeJsonParse } from '../../core';
+
 /**
  * Converts JSON objects or raw JSON strings into syntax-highlighted HTML string representation.
  * Uses CSS CSS variables (`--json-key`, `--json-string`, `--json-number`, `--json-boolean`, `--json-null`).
@@ -9,10 +11,10 @@ export function highlightJsonSyntax(data: any): string {
 
   let jsonStr = '';
   if (typeof data === 'string') {
-    try {
-      const parsed = JSON.parse(data);
+    const parsed = safeJsonParse(data, null);
+    if (parsed !== null) {
       jsonStr = JSON.stringify(parsed, null, 2);
-    } catch {
+    } else {
       // If plain text string, return escaped string
       return data.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }

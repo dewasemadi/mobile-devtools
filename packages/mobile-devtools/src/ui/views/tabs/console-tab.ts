@@ -9,6 +9,7 @@ import {
 import { renderJsonTree } from '../../components/json-tree';
 import { TRASH_ICON } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
+import { createSearchInput } from '../../components/search-input';
 
 export class ConsoleTabView {
   private store: DevToolsStore;
@@ -38,26 +39,22 @@ export class ConsoleTabView {
     toolbar.style.gap = '6px';
 
     const row1 = document.createElement('div');
-    row1.style.display = 'flex';
-    row1.style.alignItems = 'center';
-    row1.style.gap = '6px';
-    row1.style.width = '100%';
+    row1.className = 'devtools-toolbar-row';
 
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.className = 'devtools-search-input';
-    searchInput.placeholder = 'Filter console logs...';
-    searchInput.value = this.searchValue;
-    searchInput.style.flex = '1';
-    searchInput.style.minWidth = '0';
-    searchInput.addEventListener('input', (e) => {
-      this.searchValue = (e.target as HTMLInputElement).value;
-      this.updateList();
+    const { container: searchWrapper } = createSearchInput({
+      placeholder: 'Filter console logs...',
+      value: this.searchValue,
+      ariaLabel: 'Filter console logs',
+      onInput: (val) => {
+        this.searchValue = val;
+        this.updateList();
+      },
     });
 
     this.clearBtn = document.createElement('button');
     this.clearBtn.className = 'devtools-btn devtools-btn-danger devtools-btn-icon-only';
     this.clearBtn.title = 'Clear Console Logs';
+    this.clearBtn.setAttribute('aria-label', 'Clear Console Logs');
     this.clearBtn.innerHTML = TRASH_ICON;
     this.clearBtn.addEventListener('click', () => {
       if (
@@ -70,14 +67,11 @@ export class ConsoleTabView {
       }
     });
 
-    row1.appendChild(searchInput);
+    row1.appendChild(searchWrapper);
     row1.appendChild(this.clearBtn);
 
     const row2 = document.createElement('div');
-    row2.style.display = 'flex';
-    row2.style.alignItems = 'center';
-    row2.style.gap = '6px';
-    row2.style.width = '100%';
+    row2.className = 'devtools-toolbar-row';
     row2.style.overflowX = 'auto';
     setupScrollLockGuard(row2);
 

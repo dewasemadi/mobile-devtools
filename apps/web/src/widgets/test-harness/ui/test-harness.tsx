@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Terminal, Globe, Database, Play, AlertTriangle, AlertCircle, Zap } from 'lucide-react';
 import { Button } from '@/shared/ui/button';

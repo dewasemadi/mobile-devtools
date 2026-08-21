@@ -24,6 +24,9 @@ export class FloatingBadgeView {
     this.currentPos = clampPositionToViewport(store.getBadgePosition());
     this.badgeElement = document.createElement('div');
     this.badgeElement.className = 'devtools-badge';
+    this.badgeElement.setAttribute('role', 'button');
+    this.badgeElement.setAttribute('tabindex', '0');
+    this.badgeElement.setAttribute('aria-label', 'Toggle Mobile DevTools');
   }
 
   public render(): HTMLElement {
@@ -47,6 +50,7 @@ export class FloatingBadgeView {
     const width = this.getBadgeWidth();
     const clamped = clampPositionToViewport(pos, width, 38, 16);
     this.currentPos = clamped;
+    this.badgeElement.setAttribute('aria-expanded', this.store.getIsOpen() ? 'true' : 'false');
 
     const unread = this.store.getUnreadCounts();
     const config = this.store.getConfig();
@@ -131,6 +135,13 @@ export class FloatingBadgeView {
   }
 
   private setupEventListeners() {
+    this.badgeElement.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.store.toggleOpen();
+      }
+    });
+
     this.badgeElement.addEventListener('pointerdown', (e: PointerEvent) => {
       this.dragStartPos = {
         startX: e.clientX,

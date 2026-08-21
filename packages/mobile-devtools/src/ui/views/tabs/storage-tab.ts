@@ -3,6 +3,7 @@ import {
   IndexedDBInfo,
   IndexedDBRecord,
   isBrowser,
+  safeJsonParse,
   STORAGE_TYPES,
   StorageManager,
   StorageType,
@@ -10,6 +11,7 @@ import {
 import { CHECK_ICON, CLOSE_ICON, PLUS_ICON, TRASH_ICON } from '../../icons';
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
 import { renderJsonTree } from '../../components/json-tree';
+import { createSearchInput } from '../../components/search-input';
 
 export class StorageTabView {
   private container: HTMLElement;
@@ -43,26 +45,22 @@ export class StorageTabView {
     toolbar.style.gap = '6px';
 
     const row1 = document.createElement('div');
-    row1.style.display = 'flex';
-    row1.style.alignItems = 'center';
-    row1.style.gap = '6px';
-    row1.style.width = '100%';
+    row1.className = 'devtools-toolbar-row';
 
-    const searchInput = document.createElement('input');
-    searchInput.type = 'text';
-    searchInput.className = 'devtools-search-input';
-    searchInput.placeholder = 'Search key or value...';
-    searchInput.value = this.searchValue;
-    searchInput.style.flex = '1';
-    searchInput.style.minWidth = '0';
-    searchInput.addEventListener('input', (e) => {
-      this.searchValue = (e.target as HTMLInputElement).value;
-      this.updateList();
+    const { container: searchWrapper } = createSearchInput({
+      placeholder: 'Search key or value...',
+      value: this.searchValue,
+      ariaLabel: 'Search storage key or value',
+      onInput: (val) => {
+        this.searchValue = val;
+        this.updateList();
+      },
     });
 
     const addBtn = document.createElement('button');
     addBtn.className = 'devtools-btn devtools-btn-icon-only';
     addBtn.title = 'Add new key-value pair';
+    addBtn.setAttribute('aria-label', 'Add new key-value pair');
     addBtn.innerHTML = PLUS_ICON;
     addBtn.addEventListener('click', () => {
       this.isAddingNew = !this.isAddingNew;
@@ -72,6 +70,7 @@ export class StorageTabView {
     this.clearBtn = document.createElement('button');
     this.clearBtn.className = 'devtools-btn devtools-btn-danger devtools-btn-icon-only';
     this.clearBtn.title = 'Clear Storage';
+    this.clearBtn.setAttribute('aria-label', 'Clear Storage');
     this.clearBtn.innerHTML = TRASH_ICON;
     this.clearBtn.addEventListener('click', async () => {
       if (
@@ -84,17 +83,14 @@ export class StorageTabView {
       }
     });
 
-    row1.appendChild(searchInput);
+    row1.appendChild(searchWrapper);
     if (this.storageType !== STORAGE_TYPES.INDEXED_DB) {
       row1.appendChild(addBtn);
     }
     row1.appendChild(this.clearBtn);
 
     const row2 = document.createElement('div');
-    row2.style.display = 'flex';
-    row2.style.alignItems = 'center';
-    row2.style.gap = '6px';
-    row2.style.width = '100%';
+    row2.className = 'devtools-toolbar-row';
     row2.style.overflowX = 'auto';
     setupScrollLockGuard(row2);
 
@@ -424,9 +420,9 @@ export class StorageTabView {
     const thead = document.createElement('thead');
     thead.innerHTML = `
       <tr>
-        <th style="width:30%">Key</th>
+        <th style="width:35%">Key</th>
         <th>Value (Click to edit)</th>
-        <th style="width:40px;text-align:center">Action</th>
+        <th style="width:42px;text-align:center">Action</th>
       </tr>
     `;
 
@@ -437,6 +433,8 @@ export class StorageTabView {
       const tdKey = document.createElement('td');
       tdKey.style.fontWeight = '600';
       tdKey.style.color = 'var(--dev-text-bright)';
+      tdKey.style.wordBreak = 'break-all';
+      tdKey.style.overflowWrap = 'anywhere';
       tdKey.textContent = item.key;
 
       const tdVal = document.createElement('td');
@@ -559,9 +557,9 @@ export class StorageTabView {
     const thead = document.createElement('thead');
     thead.innerHTML = `
       <tr>
-        <th style="width:25%">Primary Key</th>
+        <th style="width:35%">Primary Key</th>
         <th>Value Payload</th>
-        <th style="width:40px;text-align:center">Action</th>
+        <th style="width:42px;text-align:center">Action</th>
       </tr>
     `;
 
@@ -574,6 +572,8 @@ export class StorageTabView {
       tdKey.style.color = 'var(--dev-text-bright)';
       tdKey.style.fontFamily = 'var(--dev-font-mono)';
       tdKey.style.fontSize = '11px';
+      tdKey.style.wordBreak = 'break-all';
+      tdKey.style.overflowWrap = 'anywhere';
       tdKey.textContent = typeof rec.key === 'object' ? JSON.stringify(rec.key) : String(rec.key);
 
       const tdVal = document.createElement('td');
@@ -583,14 +583,10 @@ export class StorageTabView {
       if (typeof rec.value === 'object' && rec.value !== null) {
         tdVal.appendChild(renderJsonTree(rec.value));
       } else if (typeof rec.value === 'string') {
-        try {
-          const parsed = JSON.parse(rec.value);
-          if (typeof parsed === 'object' && parsed !== null) {
-            tdVal.appendChild(renderJsonTree(parsed));
-          } else {
-            tdVal.textContent = rec.value;
-          }
-        } catch {
+        const parsed = safeJsonParse(rec.value, null);
+        if (typeof parsed === 'object' && parsed !== null) {
+          tdVal.appendChild(renderJsonTree(parsed));
+        } else {
           tdVal.textContent = rec.value;
         }
       } else {
