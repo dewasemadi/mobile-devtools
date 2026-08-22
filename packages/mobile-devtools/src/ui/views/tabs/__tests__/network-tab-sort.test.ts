@@ -67,6 +67,17 @@ describe('NetworkTabView Sorting', () => {
       endTime: 5010,
     });
 
+    store.addNetworkRequest({
+      id: 'req-6',
+      url: 'https://api.example.com/f_info',
+      method: 'GET',
+      status: 101,
+      statusText: 'Switching Protocols',
+      type: 'fetch',
+      startTime: 6000,
+      endTime: 6010,
+    });
+
     const element = tabView.render();
     expect(element).toBeTruthy();
 
@@ -104,12 +115,25 @@ describe('NetworkTabView Sorting', () => {
     expect(text).toContain('d_notfound');
     expect(text).not.toContain('c_redirect');
 
+    // Test 1xx status filter
+    sortSelect.value = 'status-1xx';
+    sortSelect.dispatchEvent(new Event('change'));
+    text = element.textContent || '';
+    expect(text).toContain('f_info');
+    expect(text).not.toContain('b_fast');
+
     // Test Network Error filter (status 0)
     sortSelect.value = 'status-err';
     sortSelect.dispatchEvent(new Event('change'));
     text = element.textContent || '';
     expect(text).toContain('e_failed');
     expect(text).not.toContain('b_fast');
+
+    // Test Oldest time sort
+    sortSelect.value = 'time-asc';
+    sortSelect.dispatchEvent(new Event('change'));
+    text = element.textContent || '';
+    expect(text).toContain('b_fast');
 
     // Test Slowest duration sort
     sortSelect.value = 'duration-desc';
@@ -124,3 +148,4 @@ describe('NetworkTabView Sorting', () => {
     expect(text).toContain('e_failed');
   });
 });
+

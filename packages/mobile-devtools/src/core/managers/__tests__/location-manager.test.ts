@@ -32,13 +32,47 @@ describe('LocationManager', () => {
     (window as any).location = origLoc;
   });
 
-  it('should notify subscribers on history pushState and popstate', () => {
+  it('should notify subscribers on history pushState, replaceState, popstate, and hashchange', () => {
     const listener = vi.fn();
+    const errorListener = vi.fn().mockImplementation(() => {
+      throw new Error('Listener error');
+    });
+
     const unsubscribe = LocationManager.subscribe(listener);
+    const unsubscribeErr = LocationManager.subscribe(errorListener);
+
+    // Call init again to verify idempotency check
+    LocationManager.initLocationTracking();
 
     window.history.pushState({}, '', '/new-test-path');
     expect(listener).toHaveBeenCalled();
 
+    window.history.replaceState({}, '', '/replaced-path');
+    expect(listener).toHaveBeenCalledTimes(2);
+
+    window.dispatchEvent(new Event('popstate'));
+    expect(listener).toHaveBeenCalledTimes(3);
+
+    window.dispatchEvent(new Event('hashchange'));
+    expect(listener).toHaveBeenCalledTimes(4);
+
     unsubscribe();
+    unsubscribeErr();
+
+    window.history.pushState({}, '', '/after-unsubscribe');
+    expect(listener).toHaveBeenCalledTimes(4);
+  });
+
+  it('should fallback gracefully when URLSearchParams fails', () => {
+    const origURLSearchParams = globalThis.URLSearchParams;
+    (globalThis as any).URLSearchParams = function () {
+      throw new Error('Malformed URL params');
+    };
+
+    const details = LocationManager.getLocationDetails();
+    expect(details.queryParams).toEqual({});
+
+    globalThis.URLSearchParams = origURLSearchParams;
   });
 });
+

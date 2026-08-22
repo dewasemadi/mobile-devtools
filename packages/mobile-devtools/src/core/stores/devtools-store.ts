@@ -156,8 +156,15 @@ export class DevToolsStore {
   }
 
   private notify() {
-    this.listeners.forEach((listener) => listener());
+    this.listeners.forEach((listener) => {
+      try {
+        listener();
+      } catch {
+        // Prevent listener errors from breaking store emitter
+      }
+    });
   }
+
 
   // --- Theme Mode ---
   public getThemeMode(): ThemeMode {

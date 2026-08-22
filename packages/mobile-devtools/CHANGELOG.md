@@ -5,6 +5,26 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.2] - 2026-08-22
+
+### ⚡ Package Best Practices, Tree-Shaking & Storage Editing UX Fixes
+
+#### Fixed & Improved
+
+- **NPM Package Best Practices & Tree-Shaking**:
+  - Added `"sideEffects": false` to `package.json` to enable optimal tree-shaking for consumer bundlers (Vite, Webpack, Rollup).
+  - Updated `repository.url` format to standard `git+https://...` specification.
+  - Resolved all `publint` package validation checks (`All good!`).
+- **Storage Tab Inline Editing & Event Propagation**:
+  - Fixed an issue where pressing `Escape` during inline Storage value editing mistakenly saved changes due to unmount `blur` events. Added an `isHandled` guard to distinguish between `commit` and `cancel`.
+  - Added `e.stopPropagation()` on `Escape` and `Enter` keydown events inside Storage edit inputs, preventing the keydown event from bubbling up to `window` and unintentionally closing the main DevTools drawer overlay when cancelling an edit.
+  - Added auto-selection (`editInput.select()`) on click-to-edit for seamless text replacement.
+  - Added `aria-label="Edit value for ${item.key}"` accessibility attribute for screen readers.
+- **Unit Test Coverage Expansion**:
+  - Added unit test coverage for Storage inline cell editing, verifying Escape key cancellation, storage immutability on cancel, and `stopPropagation` keydown event assertion in `storage-tab.test.ts`.
+
+---
+
 ## [1.6.1] - 2026-08-21
 
 ### ♿ Accessibility, Search Clear Icon, Dynamic Theming & UX Refinements
