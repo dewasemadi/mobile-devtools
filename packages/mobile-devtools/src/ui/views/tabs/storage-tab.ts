@@ -449,24 +449,44 @@ export class StorageTabView {
         editInput.className = 'devtools-search-input';
         editInput.style.width = '100%';
         editInput.value = item.value;
-        editInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            this.setItem(item.key, editInput.value);
-            this.editingKey = null;
-            this.updateList();
-          } else if (e.key === 'Escape') {
-            this.editingKey = null;
-            this.updateList();
-          }
-        });
-        editInput.addEventListener('blur', () => {
+        editInput.setAttribute('aria-label', `Edit value for ${item.key}`);
+
+        let isHandled = false;
+
+        const commit = () => {
+          if (isHandled) return;
+          isHandled = true;
           this.setItem(item.key, editInput.value);
           this.editingKey = null;
           this.updateList();
+        };
+
+        const cancel = () => {
+          if (isHandled) return;
+          isHandled = true;
+          this.editingKey = null;
+          this.updateList();
+        };
+
+        editInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.stopPropagation();
+            commit();
+          } else if (e.key === 'Escape') {
+            e.stopPropagation();
+            cancel();
+          }
+        });
+
+        editInput.addEventListener('blur', () => {
+          commit();
         });
 
         tdVal.appendChild(editInput);
-        setTimeout(() => editInput.focus(), 0);
+        setTimeout(() => {
+          editInput.focus();
+          editInput.select();
+        }, 0);
       } else {
         tdVal.textContent = item.value;
         tdVal.addEventListener('click', () => {

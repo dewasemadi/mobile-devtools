@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ElementsManager, STYLE_CATEGORIES } from '../elements-manager';
 
 describe('ElementsManager', () => {
@@ -103,6 +103,38 @@ describe('ElementsManager', () => {
     manager.stopPicker();
     expect(manager.isPickerActive()).toBe(false);
     expect(selectedEl).toBeNull();
+  });
+
+  it('should handle picker overlay touch and click events', () => {
+    let selectedEl: HTMLElement | null = null;
+    const targetDiv = document.createElement('div');
+    targetDiv.id = 'target-element';
+    document.body.appendChild(targetDiv);
+
+    document.elementFromPoint = vi.fn().mockReturnValue(targetDiv);
+
+    manager.startPicker((el) => {
+      selectedEl = el;
+    });
+
+    // Simulate touch move over element
+    const touchMove = new TouchEvent('touchmove', {
+      bubbles: true,
+      touches: [{ clientX: 10, clientY: 10 } as Touch],
+    });
+    document.dispatchEvent(touchMove);
+
+    // Simulate click selection
+    const clickEvt = new MouseEvent('click', {
+      bubbles: true,
+      clientX: 10,
+      clientY: 10,
+    });
+    document.dispatchEvent(clickEvt);
+
+    expect(manager.isPickerActive()).toBe(false);
+
+    document.body.removeChild(targetDiv);
   });
 
   it('should expose STYLE_CATEGORIES definitions', () => {

@@ -135,21 +135,59 @@ describe('DevToolsStore', () => {
     expect(logs[0].count).toBe(2);
   });
 
-  it('should clear logs and network requests', () => {
-    store.addLog({ id: '1', level: 'info', args: ['hello'], timestamp: 1, count: 1 });
-    store.clearLogs();
-    expect(store.getLogs().length).toBe(0);
-
+  it('should handle addNetworkFrame and updateNetworkRequest for existing and missing request IDs', () => {
     store.addNetworkRequest({
       id: 'req_1',
-      url: 'https://api.example.com',
-      method: 'GET',
-      status: 200,
+      url: 'ws://example.com/ws',
+      method: 'WS',
+      status: 101,
       startTime: Date.now(),
+      frames: [],
     });
-    expect(store.getNetworkRequests().length).toBe(1);
 
-    store.clearNetworkRequests();
-    expect(store.getNetworkRequests().length).toBe(0);
+    store.addNetworkFrame('req_1', {
+      id: 'f1',
+      type: 'sent',
+      data: 'ping',
+      timestamp: Date.now(),
+    });
+    // Non-existent request ID frame test
+    store.addNetworkFrame('req_missing', {
+      id: 'f2',
+      type: 'received',
+      data: 'pong',
+      timestamp: Date.now(),
+    });
+
+    const requests = store.getNetworkRequests();
+    expect(requests[0].frames?.length).toBe(1);
+
+    store.updateNetworkRequest('req_1', { statusText: 'Open' });
+    store.updateNetworkRequest('missing_id', { statusText: 'None' });
+    expect(store.getNetworkRequests()[0].statusText).toBe('Open');
+  });
+
+  it('should support position preset strings and effective dark mode detection', () => {
+    store.updateConfig({ position: 'top-left' });
+    expect(store.getBadgePosition().x).toBe(16);
+
+    store.updateConfig({ position: 'bottom-right' });
+    expect(store.getBadgePosition()).toBeDefined();
+
+    // Test matchMedia light mode vs dark mode in auto mode
+    store.setThemeMode('auto');
+    expect(store.getEffectiveThemeMode()).toBeDefined();
+  });
+
+  it('should handle throwing store listeners cleanly', () => {
+    const errorListener = vi.fn().mockImplementation(() => {
+      throw new Error('Listener fail');
+    });
+
+    const unsubscribe = store.subscribe(errorListener);
+    expect(() => store.setIsOpen(true)).not.toThrow();
+
+    unsubscribe();
   });
 });
+

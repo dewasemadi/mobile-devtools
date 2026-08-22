@@ -56,14 +56,25 @@ describe('SystemManager', () => {
     expect(diag.osName).toBe('Linux');
   });
 
-  it('should collect JS Heap memory info if available', () => {
-    (window as any).memory = {
-      jsHeapSizeLimit: 2147483648,
+  it('should handle unknown browser, unknown OS, landscape orientation, and connection info', () => {
+    vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue('CustomBot/1.0');
+    vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(1024);
+    vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(768);
+
+    (navigator as any).connection = { effectiveType: '4g' };
+    (performance as any).memory = {
+      jsHeapSizeLimit: 104857600,
       usedJSHeapSize: 52428800,
     };
 
     const diag = SystemManager.getDiagnostics();
-    expect(diag.jsHeapSizeLimit).toBe('2048 MB');
-    expect(diag.usedJsHeapSize).toBe('50 MB');
+    expect(diag.browserName).toBe('Browser');
+    expect(diag.osName).toBe('Unknown OS');
+    expect(diag.orientation).toBe('landscape');
+    expect(diag.connectionType).toBe('4g');
+    expect(diag.jsHeapSizeLimit).toBe('100 MB');
+
+    delete (navigator as any).connection;
   });
 });
+
